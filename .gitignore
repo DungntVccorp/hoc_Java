@@ -24,3 +24,9 @@ hs_err_pid*
 /EP5_DATA_STRUCTURE/build/
 /EP6_NETWORKING/nbproject/private/
 /EP6_NETWORKING/build/
+/ThreadPool/nbproject/private/
+/ThreadPool/build/
+/ServerSocket/nbproject/private/
+/ServerSocket/build/
+/socketClient/nbproject/private/
+/socketClient/build/

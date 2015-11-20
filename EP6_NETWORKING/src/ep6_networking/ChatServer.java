@@ -40,7 +40,7 @@ public class ChatServer {
 
     private static class Handler extends Thread {
         private String name;
-        private Socket socket;
+        private final Socket socket;
         private BufferedReader in;
         private PrintWriter out;
 
@@ -50,6 +50,7 @@ public class ChatServer {
         }
 
         
+        @Override
         public void run() {
             try {
                 currentConnection += 1;
