@@ -30,3 +30,8 @@ hs_err_pid*
 /ServerSocket/build/
 /socketClient/nbproject/private/
 /socketClient/build/
+/ServerSendFile/nbproject/private/
+/ServerSendFile/build/
+/socketClient/dist/
+/EP7_SINGLETON/nbproject/private/
+/EP7_SINGLETON/build/

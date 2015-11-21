@@ -7,6 +7,8 @@ package serversocket;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  *
@@ -17,11 +19,13 @@ public class server  {
     public void startServer(){
         try {
             server = new ServerSocket(12345);
+            
             System.out.println("Server Started!");
+            ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
             while (true) {                
                 Socket client = server.accept();
-                Thread thrd = new Thread(new Command(client));
-                thrd.start();
+                Command cmd = new Command(client);
+                executor.execute(cmd);
             }
         } catch (Exception e) {
             e.printStackTrace();
