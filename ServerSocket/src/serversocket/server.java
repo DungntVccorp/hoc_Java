@@ -12,7 +12,7 @@ import java.net.Socket;
  *
  * @author nguyendung
  */
-public class server {
+public class server  {
     public ServerSocket server = null;
     public void startServer(){
         try {
@@ -22,7 +22,6 @@ public class server {
                 Socket client = server.accept();
                 Thread thrd = new Thread(new Command(client));
                 thrd.start();
-                
             }
         } catch (Exception e) {
             e.printStackTrace();

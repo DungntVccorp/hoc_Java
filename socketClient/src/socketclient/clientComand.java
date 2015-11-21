@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package serversocket;
+package socketclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,41 +15,42 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author nguyendung
+ * @author dungnt
  */
-public class Command extends Thread {
-
+public class clientComand extends Thread{
     private Socket sk = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
-
-    public Command(Socket sk) {
+    public clientComand(Socket sk) {
         this.sk = sk;
     }
-
+    
     @Override
     public void run() {
         System.out.println("Accepted connection. ");
         try {
             out = new PrintWriter(sk.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(sk.getInputStream()));
-            System.out.println("Reader and writer created. ");
-            
+            out.println("d_lg");
             while (true) {                
                 String CMD = in.readLine();
-                if ("d_lg".equals(CMD)) {
-                    out.println("OK");
+                if("OK".equals(CMD)){
+                     System.out.println("Login OK");
+                     //out.println("d_get_info");
                 }
-                else if("d_get_info".equals(CMD)){
-                    out.println("DONE");
-                    out.println("END");
+                else if("DONE".equals(CMD)){
+                    System.out.println("Get Info Done");
+                    
+                }
+                else if("END".equals(CMD)){
+                    System.out.println("End Connection");
                     break;
                 }
-                
-                out.println("PING");
-                
             }
             
+           
+            
+           
 
         } catch (Exception e) {
             try {
@@ -58,18 +59,18 @@ public class Command extends Thread {
                 this.sk.close();
                 System.out.println("Connection Close" + e.getLocalizedMessage());
             } catch (IOException ex) {
-                Logger.getLogger(Command.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(clientComand.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } finally {
-            try {
-                this.out.close();
-                this.in.close();
-                this.sk.close();
-                System.out.println("Connection Close");
-            } catch (IOException ex) {
-                Logger.getLogger(Command.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                this.out.close();
+//                this.in.close();
+//                this.sk.close();
+//                System.out.println("Connection Close");
+//            } catch (IOException ex) {
+//                Logger.getLogger(Command.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         }
     }
 }
