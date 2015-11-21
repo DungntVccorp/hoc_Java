@@ -35,3 +35,5 @@ hs_err_pid*
 /socketClient/dist/
 /EP7_SINGLETON/nbproject/private/
 /EP7_SINGLETON/build/
+/EP9_SOCKET/nbproject/private/
+/EP9_SOCKET/build/
