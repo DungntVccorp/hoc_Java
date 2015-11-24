@@ -37,3 +37,5 @@ hs_err_pid*
 /EP7_SINGLETON/build/
 /EP9_SOCKET/nbproject/private/
 /EP9_SOCKET/build/
+/MUTILTHREAD/nbproject/private/
+/MUTILTHREAD/build/

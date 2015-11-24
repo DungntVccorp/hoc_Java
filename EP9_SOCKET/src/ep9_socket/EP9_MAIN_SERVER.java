@@ -14,43 +14,82 @@ import java.util.logging.Logger;
  *
  * @author nguyendung
  */
-public class EP9_MAIN_SERVER implements Runnable{
-    protected Socket socket = null;
-    protected PrintWriter out = null;
-    protected BufferedReader in = null;
+public class EP9_MAIN_SERVER implements Runnable {
+
+    private Socket socket = null;
+    private PrintWriter out = null;
+    private BufferedReader in = null;
+    private DataInputStream dIn = null;
+    private boolean online = true;
+
     EP9_MAIN_SERVER(Socket accept) throws IOException {
-        this.socket = accept;
-        this.out = new PrintWriter(this.socket.getOutputStream(), true);
-        this.in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+        System.out.println("Create New Socket Client");
+        socket = accept;
+        out = new PrintWriter(socket.getOutputStream(), true);
+        //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        dIn = new DataInputStream(socket.getInputStream());
     }
-    
-    public void run(){
+
+    @Override
+    public void run() {
         try {
-            String inputLine = null;
-            while ((inputLine = in.readLine()) != null) {
-                if("GG".equals(inputLine)){
-                    this.out.println("COUNT " + EP9_APP_SHARE_DATASOURCE.getInstance().CountClient());
+
+            while (online) {
+                String inputLine = in.readLine();
+                int length = dIn.readInt();
+                System.out.println("length "+length);
+                if (inputLine != null) {
+                    switch (inputLine) {
+                        case "GG":
+                            this.out.println("COUNT " + EP9_APP_SHARE_DATASOURCE.getInstance().CountClient());
+                            break;
+                        case "MESSAGE":
+                            this.sendMessageToAllUser();
+                            break;
+                        case "END":
+                            online = false;
+                            break;
+                        default:
+                            this.out.println("HIHI " + inputLine);
+                            break;
+                    }
+                } else {
+                    if (length > 0) {
+                        byte[] message = new byte[length];
+                        dIn.readFully(message, 0, message.length);
+                        this.out.println("HIHI ");
+                    }
                 }
-                else if("MESSAGE".equals(inputLine)){
-                    this.sendMessageToAllUser();
-                }
-                else{
-                    this.out.println("HIHI " + inputLine);
-                }
-                
+
             }
-            
+
+            if (!online) {
+                try {
+                    in.close();
+                    out.close();
+                    socket.close();
+                } catch (Exception e) {
+
+                } finally {
+                    System.out.println("End Thread " + +EP9_APP_SHARE_DATASOURCE.getInstance().CountClient());
+                }
+
+            }
+
         } catch (IOException ex) {
-            Logger.getLogger(EP9_MAIN_SERVER.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("End Thread " + +EP9_APP_SHARE_DATASOURCE.getInstance().CountClient());
         }
     }
-    public void sendMessage(String message){
+
+    public void sendMessage(String message) {
         this.out.println(message);
     }
-    public void stop(){
-        
+
+    public void stop() {
+
     }
-    public void sendMessageToAllUser(){
-        
+
+    public void sendMessageToAllUser() {
+
     }
 }
