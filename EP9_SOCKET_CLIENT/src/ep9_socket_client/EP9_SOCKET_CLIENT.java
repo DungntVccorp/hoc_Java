@@ -5,8 +5,6 @@
  */
 package ep9_socket_client;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -28,10 +26,10 @@ public class EP9_SOCKET_CLIENT {
         String host = "127.0.0.1";
         try {
             socket = new Socket(host, 1234);
-            byte[] message = "DUNGNT".getBytes("UTF-8");
-            System.out.println(message.length +message.toString());
+            byte[] message = "DUNGNT TEST 1234 alsjkdlasjd ".getBytes("UTF-8");
             OutputStream socketOutputStream = socket.getOutputStream();
             socketOutputStream.write(message);
+            socket.close();
         } catch (IOException ex) {
             Logger.getLogger(EP9_SOCKET_CLIENT.class.getName()).log(Level.SEVERE, null, ex);
         }

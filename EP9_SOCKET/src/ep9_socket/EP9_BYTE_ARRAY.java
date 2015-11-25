@@ -5,10 +5,12 @@
  */
 package ep9_socket;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -25,13 +27,14 @@ public class EP9_BYTE_ARRAY implements Runnable {
     private Socket client = null;
     private PrintWriter out = null;
     private DataInputStream dIn = null;
+    private BufferedReader in = null;
     private boolean online = true;
 
     EP9_BYTE_ARRAY(Socket accept) {
         try {
             this.client = accept;
             out = new PrintWriter(this.client.getOutputStream(), true);
-
+            in = new BufferedReader(new InputStreamReader(this.client.getInputStream()));
             dIn = new DataInputStream(this.client.getInputStream());
             System.out.println("Thread Create");
         } catch (IOException ex) {

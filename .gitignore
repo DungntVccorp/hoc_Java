@@ -41,3 +41,6 @@ hs_err_pid*
 /MUTILTHREAD/build/
 /EP9_SOCKET_CLIENT/nbproject/private/
 /EP9_SOCKET_CLIENT/build/
+/EP10_CHAT_SERVER/nbproject/private/
+/EP10_CHAT_SERVER/build/
+/EP10_CHAT_CLIENT/nbproject/private/
