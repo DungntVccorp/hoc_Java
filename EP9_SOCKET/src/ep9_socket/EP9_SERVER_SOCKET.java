@@ -18,8 +18,8 @@ public class EP9_SERVER_SOCKET {
             }
             System.out.println("Server Started!");
             // create 1 thred nếu có 1 client connect 
-            while (true) {                
-                EP9_APP_SHARE_DATASOURCE.getInstance().addClient(new EP9_MAIN_SERVER(this.server.accept()));
+            while (true) {  
+                EP9_APP_SHARE_DATASOURCE.getInstance().addClient(new EP9_BYTE_ARRAY(this.server.accept()));
             }
             
             

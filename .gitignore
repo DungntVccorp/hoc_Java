@@ -39,3 +39,5 @@ hs_err_pid*
 /EP9_SOCKET/build/
 /MUTILTHREAD/nbproject/private/
 /MUTILTHREAD/build/
+/EP9_SOCKET_CLIENT/nbproject/private/
+/EP9_SOCKET_CLIENT/build/

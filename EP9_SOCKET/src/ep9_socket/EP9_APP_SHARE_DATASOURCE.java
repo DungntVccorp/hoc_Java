@@ -26,7 +26,7 @@ public class EP9_APP_SHARE_DATASOURCE {
       }
       return instance;
    }
-    public void addClient(EP9_MAIN_SERVER server){
+    public void addClient(EP9_BYTE_ARRAY server){
         currentThreadUser.execute(server);
     }
     public int CountClient(){

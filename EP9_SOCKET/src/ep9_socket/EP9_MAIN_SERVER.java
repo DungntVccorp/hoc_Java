@@ -7,8 +7,7 @@ package ep9_socket;
 
 import java.io.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -26,7 +25,7 @@ public class EP9_MAIN_SERVER implements Runnable {
         System.out.println("Create New Socket Client");
         socket = accept;
         out = new PrintWriter(socket.getOutputStream(), true);
-        //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         dIn = new DataInputStream(socket.getInputStream());
     }
 
@@ -36,9 +35,10 @@ public class EP9_MAIN_SERVER implements Runnable {
 
             while (online) {
                 String inputLine = in.readLine();
-                int length = dIn.readInt();
-                System.out.println("length "+length);
+                //int length = dIn.readInt();
+                
                 if (inputLine != null) {
+                    System.out.println("String " + inputLine);
                     switch (inputLine) {
                         case "GG":
                             this.out.println("COUNT " + EP9_APP_SHARE_DATASOURCE.getInstance().CountClient());
@@ -53,13 +53,17 @@ public class EP9_MAIN_SERVER implements Runnable {
                             this.out.println("HIHI " + inputLine);
                             break;
                     }
-                } else {
-                    if (length > 0) {
-                        byte[] message = new byte[length];
-                        dIn.readFully(message, 0, message.length);
-                        this.out.println("HIHI ");
-                    }
-                }
+                } 
+//                else {
+//                    System.out.println("length " + length);
+//                    if (length > 0) {
+//                        byte[] message = new byte[length];
+//                        
+//                        dIn.readFully(message, 0, message.length);
+//                        String str = new String(message);
+//                        this.out.println("HIHI " + str);
+//                    }
+//                }
 
             }
 
