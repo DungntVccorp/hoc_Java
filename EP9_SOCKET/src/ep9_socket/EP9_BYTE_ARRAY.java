@@ -6,17 +6,16 @@
 package ep9_socket;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 /**
  *
@@ -43,20 +42,63 @@ public class EP9_BYTE_ARRAY implements Runnable {
         }
     }
 
+    public static byte[] decompress(byte[] data) throws IOException, DataFormatException {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!inflater.finished()) {
+            int count = inflater.inflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        byte[] output = outputStream.toByteArray();
+        
+        System.out.println("Compressed: " + output.length + " Byte");
+        return output;
+    }
+
     @Override
     public void run() {
         try {
-            System.out.println("Thread Start");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte buffer[] = new byte[1024];
-            for (int s; (s = dIn.read(buffer)) != -1;) {
-                baos.write(buffer, 0, s);
+            while (online) {
+                byte buffer[] = new byte[1024 * 512];
+                int s = dIn.read(buffer);
+                if (s != -1) {
+                    System.out.println("Original: " + s + " Byte");
+                    // giải mã -> giải nén 
+                    ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
+                    baos1.write(buffer, 0, s);
+                    //giai ma
+                    byte[] decrypt = EP9_AESencrp.decrypt(baos1.toByteArray());
+                    System.out.println("decrypt "+decrypt.length);
+                    
+                    byte bufferDecom[] = decompress(decrypt);
+//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                    baos.write(bufferDecom, 0, bufferDecom.length);
+//                    byte result[] = baos.toByteArray();
+                    System.out.println(new String(bufferDecom));
+                    online = false;
+                }
+//                System.out.println("Thread Start");
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                byte buffer[] = new byte[1024];
+//                for (int s; (s = dIn.read(buffer)) != -1;) {
+//                    baos.write(buffer, 0, s);
+//                }
+//                byte result[] = baos.toByteArray();
+//                System.out.println("result " + result.length);
+//                System.out.println(new String(result));
             }
-            byte result[] = baos.toByteArray();
-            System.out.println("result "+result.length);
-            System.out.println(new String(result));
+            if (!online) {
+                client.close();
+            }
 
         } catch (IOException ex) {
+            Logger.getLogger(EP9_BYTE_ARRAY.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DataFormatException ex) {
+            Logger.getLogger(EP9_BYTE_ARRAY.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(EP9_BYTE_ARRAY.class.getName()).log(Level.SEVERE, null, ex);
         }
 

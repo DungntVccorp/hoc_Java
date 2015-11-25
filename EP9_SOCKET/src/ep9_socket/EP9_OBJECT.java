@@ -31,25 +31,31 @@ public class EP9_OBJECT implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("START Thread");
-        while (true) {
-            try {
-                if (streamIn == null) {
-                    System.out.println("NULL ME NO ROI");
-                }
-
-                EP9_MESSAGE msg = null;
-                if ((msg = (EP9_MESSAGE) streamIn.readObject()) != null) {
-                    if (msg != null) {
-                        handle(msg);
+        try {
+            System.out.println("START Thread");
+            streamout.writeObject("test".getBytes());
+            streamout.flush();
+            while (true) {
+                try {
+                    if (streamIn == null) {
+                        System.out.println("NULL ME NO ROI");
                     }
+                    
+                    EP9_MESSAGE msg = null;
+                    if ((msg = (EP9_MESSAGE) streamIn.readObject()) != null) {
+                        if (msg != null) {
+                            handle(msg);
+                        }
+                    }
+                    
+                } catch (IOException ioe) {
+                    System.out.println(" ERROR reading: " + ioe);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(EP9_OBJECT.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-            } catch (IOException ioe) {
-                System.out.println(" ERROR reading: " + ioe);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(EP9_OBJECT.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(EP9_OBJECT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

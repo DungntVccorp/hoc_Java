@@ -18,7 +18,7 @@ public class EP9_MAIN_SERVER implements Runnable {
     private Socket socket = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
-    private DataInputStream dIn = null;
+
     private boolean online = true;
 
     EP9_MAIN_SERVER(Socket accept) throws IOException {
@@ -26,7 +26,6 @@ public class EP9_MAIN_SERVER implements Runnable {
         socket = accept;
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        dIn = new DataInputStream(socket.getInputStream());
     }
 
     @Override
@@ -35,6 +34,7 @@ public class EP9_MAIN_SERVER implements Runnable {
 
             while (online) {
                 String inputLine = in.readLine();
+               
                 //int length = dIn.readInt();
                 
                 if (inputLine != null) {
@@ -54,17 +54,6 @@ public class EP9_MAIN_SERVER implements Runnable {
                             break;
                     }
                 } 
-//                else {
-//                    System.out.println("length " + length);
-//                    if (length > 0) {
-//                        byte[] message = new byte[length];
-//                        
-//                        dIn.readFully(message, 0, message.length);
-//                        String str = new String(message);
-//                        this.out.println("HIHI " + str);
-//                    }
-//                }
-
             }
 
             if (!online) {
