@@ -10,17 +10,20 @@ import java.io.Serializable;
 public class EP9_MESSAGE implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public String type, sender, content, recipient;
+    private String type = null;
 
-    public EP9_MESSAGE(String type, String sender, String content, String recipient) {
+    public EP9_MESSAGE(String type) {
         this.type = type;
-        this.sender = sender;
-        this.content = content;
-        this.recipient = recipient;
+
     }
 
     @Override
     public String toString() {
-        return "{type='" + type + "', sender='" + sender + "', content='" + content + "', recipient='" + recipient + "'}";
+        return "{\"asd\": \"as\"}";
+    }
+    
+    public byte[] toData(){
+        byte[] obj = toString().getBytes();
+        return obj;
     }
 }

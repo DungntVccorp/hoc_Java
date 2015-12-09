@@ -40,7 +40,7 @@ public class EP9_OBJECT implements Runnable {
 
     public void send() {
         try {
-            Out.writeObject(new EP9_MESSAGE("FAP", "FAP", "FAP", "FAP"));
+            Out.writeObject(new EP9_MESSAGE("FAP"));
             Out.flush();
         } catch (IOException ex) {
             Logger.getLogger(EP9_OBJECT.class.getName()).log(Level.SEVERE, null, ex);

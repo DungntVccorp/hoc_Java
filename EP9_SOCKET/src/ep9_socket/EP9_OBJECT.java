@@ -60,9 +60,7 @@ public class EP9_OBJECT implements Runnable {
     }
 
     public void handle(EP9_MESSAGE msg) {
-        System.out.println(msg.content);
-        msg.content = "SERVER SEND";
-        sendMessage(msg);
+       
     }
 
     public void sendMessage(EP9_MESSAGE msg) {

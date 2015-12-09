@@ -5,6 +5,7 @@
  */
 package ep9_socket;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -78,6 +79,11 @@ public class EP9_BYTE_ARRAY implements Runnable {
 //                    baos.write(bufferDecom, 0, bufferDecom.length);
 //                    byte result[] = baos.toByteArray();
                     System.out.println(new String(bufferDecom));
+                    
+                    //Gson gson = new Gson();
+                    
+                    
+                    
                     online = false;
                 }
 //                System.out.println("Thread Start");

@@ -89,6 +89,7 @@ public class SOCKET_CLIENT implements Runnable {
 
     public void SendRequest(byte[] request) {
         try {
+            
             this.dOut.write(request);
             this.dOut.flush();
         } catch (IOException ex) {
