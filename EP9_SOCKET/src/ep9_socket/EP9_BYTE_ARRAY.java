@@ -6,13 +6,17 @@
 package ep9_socket;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
@@ -75,26 +79,16 @@ public class EP9_BYTE_ARRAY implements Runnable {
                     System.out.println("decrypt "+decrypt.length);
                     
                     byte bufferDecom[] = decompress(decrypt);
-//                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                    baos.write(bufferDecom, 0, bufferDecom.length);
-//                    byte result[] = baos.toByteArray();
                     System.out.println(new String(bufferDecom));
                     
-                    //Gson gson = new Gson();
-                    
-                    
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<Map<String, Object>>(){}.getType();
+                    Map<String, Object> myMap = gson.fromJson(new String(bufferDecom), type);
+                    System.out.println(Arrays.toString(myMap.keySet().toArray()));
+                    System.out.println(myMap.get("test2"));
                     
                     online = false;
                 }
-//                System.out.println("Thread Start");
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                byte buffer[] = new byte[1024];
-//                for (int s; (s = dIn.read(buffer)) != -1;) {
-//                    baos.write(buffer, 0, s);
-//                }
-//                byte result[] = baos.toByteArray();
-//                System.out.println("result " + result.length);
-//                System.out.println(new String(result));
             }
             if (!online) {
                 client.close();
