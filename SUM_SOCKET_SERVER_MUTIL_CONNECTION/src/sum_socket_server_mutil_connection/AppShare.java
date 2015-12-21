@@ -5,15 +5,17 @@
  */
 package sum_socket_server_mutil_connection;
 
+import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public final class AppShare {
     
     protected ExecutorService exxecutors;
-    
+    protected ArrayList<SUM> listClient;
     
     private AppShare() {
         this.setExxecutors(Executors.newCachedThreadPool());
+        this.listClient = new ArrayList<>();
     }
     
     public static AppShare getInstance() {
@@ -31,4 +33,13 @@ public final class AppShare {
     public void setExxecutors(ExecutorService exxecutors) {
         this.exxecutors = exxecutors;
     }    
+
+    public ArrayList<SUM> getListClient() {
+        return listClient;
+    }
+
+    public void setListClient(ArrayList<SUM> listClient) {
+        this.listClient = listClient;
+    }
+    
 }

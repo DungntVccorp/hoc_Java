@@ -45,9 +45,8 @@ public class EP9_SOCKET_CLIENT {
 
             socket = new Socket("localhost", 1234);
             DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
-           
-
             byte[] message = new EP9_MESSAGE("test1234").toData();
+
             System.out.println("message leng" + message.length);
             System.out.println(compress(message).length);
             // nén file > mã hoá

@@ -9,7 +9,6 @@ public class SUM_SOCKET_SERVER_MUTIL_CONNECTION {
 
     public static void main(String[] args) {
         AppShare.getInstance().getExxecutors().execute(new SUMSERVER());
-        
     }
     
 }
