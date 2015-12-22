@@ -62,3 +62,6 @@ vethrfolnir-mu/
 /SUM_SOCKET_SERVER_MUTIL_CONNECTION/dist/
 /helloMaven/target/
 /testOBJ/target/
+/TestBuildJar/nbproject/private/
+/TestBuildJar/dist/
+/TestBuildJar/build/
