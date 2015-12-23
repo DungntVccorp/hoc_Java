@@ -47,7 +47,6 @@ public final class DBSObject {
             byte[] decrypt = DBSCrypto.decrypt(decompress); // UNCRYPT
             System.out.println(new String(decrypt));
             JSONObject json = new JSONObject(new String(decrypt));
-
             this.data = toHashMap(json);
 
         } catch (IOException ex) {
