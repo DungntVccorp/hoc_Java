@@ -23,20 +23,12 @@ public class main {
         dbsObject.setDBSObjectForKey(dbsObject, "self");
         
         DBSObject dbsObject1 = new DBSObject(dbsObject.toByteMessage());
-<<<<<<< Updated upstream
         System.out.println(dbsObject1.getBooleanForKey("boolkey"));  
         System.out.println(dbsObject1.getCmd());
-        dbsObject1.getDBSObjectForKey("self");
-//        Byte[] stringsForKey = dbsObject1.getBytesForKey("byteKeys");
-//        for (byte stringsForKey1 : stringsForKey) {
-//            System.out.println(stringsForKey1);
-//        }
-=======
-        String[] stringsForKey = dbsObject1.getStringsForKey("d_pl_c");
+        String[] stringsForKey = dbsObject1.getStringsForKey("d_pl_b");
         for (String stringsForKey1 : stringsForKey) {
             System.out.println(stringsForKey1);
         }
-        
->>>>>>> Stashed changes
+
     }
 }
