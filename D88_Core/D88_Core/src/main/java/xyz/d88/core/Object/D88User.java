@@ -9,55 +9,44 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.zip.DataFormatException;
 
+public class D88User extends D88Object {
 
-public class D88User extends D88Object{
-    
-    private String userName = "";
-    private String password = "";
-    private String appID = "";
-    private String uuid = "";
-    
-   public D88User(String _userName,String _password){
-       super("user");
-       this.userName = _userName;
-       this.password = _password;
-       this.uuid = UUID.randomUUID().toString();
-   }
-    
-    public D88User(String _cmd) {
-        super(_cmd);
+
+    public D88User() {
+        
+    }
+
+    public D88User(String _userName, String _password) {
+        super("user");
+        
     }
 
     public D88User(byte[] d88Message) throws IOException, DataFormatException, Exception {
         super(d88Message);
+
     }
-    
-    
-    
 
     public String getUserName() {
-        return userName;
+        return this.getStringForKey("userName");
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.setStringForKey(userName, "userName");
     }
 
     public String getPassword() {
-        return password;
+        return this.getStringForKey("password");
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.setStringForKey(password, "password");
     }
 
     public String getAppID() {
-        return appID;
+        return this.getStringForKey("appid");
     }
 
     public String getUuid() {
-        return uuid;
+        return this.getStringForKey("uuid");
     }
-    
-    
 }
