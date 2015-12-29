@@ -20,11 +20,11 @@ public final class DBSObject {
 
     private String cmd = null;
     private HashMap<String, Object> data = null;
-    private static final String prefix_String = "s_";
-    private static final String prefix_Integer = "i_";
-    private static final String prefix_Double = "d_";
-    private static final String prefix_Boolean = "o_";
-    private static final String prefix_Object = "m_";
+    private static final String prefix_String = "s_"; // String
+    private static final String prefix_Integer = "i_"; // Interger
+    private static final String prefix_Double = "d_"; // Double
+    private static final String prefix_Boolean = "o_";  // Boolean
+    private static final String prefix_Object = "m_";   // OBJECT
 
     public void startOBJ() {
         this.data = new HashMap<>();
@@ -131,17 +131,18 @@ public final class DBSObject {
     // SET GET
     public String getCmd() {
         return cmd;
+        
     }
 
     public void setCmd(String cmd) {
         this.cmd = cmd;
+        this.data.put("cmd", cmd);
     }
-
     //String
     public void setStringForKey(String value, String key) {
         this.data.put(prefix_String + key, value);
     }
-
+    
     public String getStringForKey(String key) {
         return (String) this.data.get(prefix_String + key);
     }
@@ -215,6 +216,5 @@ public final class DBSObject {
     }
 }
 
-// Chưa chuẩn hoá được dữ liệu , vd byte , bit , boolean
-// chưa chưa được objject trong object
-
+// Chưa chuẩn hoá và nén được dữ liệu xuống mức nhỏ nhất, vd byte , bit , boolean
+// chưa lưu được object trong object
