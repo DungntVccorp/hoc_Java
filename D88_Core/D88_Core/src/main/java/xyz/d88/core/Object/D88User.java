@@ -6,7 +6,6 @@
 package xyz.d88.core.Object;
 
 import java.io.IOException;
-import java.util.UUID;
 import java.util.zip.DataFormatException;
 
 public class D88User extends D88Object {
@@ -20,32 +19,24 @@ public class D88User extends D88Object {
         super("user");
         
     }
-
     public D88User(byte[] d88Message) throws IOException, DataFormatException, Exception {
         super(d88Message);
-
     }
-
     public String getUserName() {
         return this.getStringForKey("userName");
     }
-
     public void setUserName(String userName) {
         this.setStringForKey(userName, "userName");
     }
-
     public String getPassword() {
         return this.getStringForKey("password");
     }
-
     public void setPassword(String password) {
         this.setStringForKey(password, "password");
     }
-
     public String getAppID() {
         return this.getStringForKey("appid");
     }
-
     public String getUuid() {
         return this.getStringForKey("uuid");
     }

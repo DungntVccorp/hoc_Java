@@ -2,7 +2,6 @@ package xyz.d88.core.Object;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.zip.DataFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,6 +11,8 @@ import xyz.d88.core.Common.D88Ziper;
 public class D88Object {
 
     private String cmd = "";
+    private String appID = "";
+
     private HashMap<String, Object> properties = null;
     private static final String prefix_String = "s_"; // String
     private static final String prefix_Integer = "i_"; // Interger
@@ -24,12 +25,21 @@ public class D88Object {
             this.properties = new HashMap<>();
         }
     }
-    
+
     public D88Object(String _cmd) {
         this.cmd = _cmd;
         if (this.properties == null) {
             this.properties = new HashMap<>();
             this.properties.put("cmd", _cmd);
+        }
+    }
+    public D88Object(String _cmd,String _appid) {
+        this.cmd = _cmd;
+        this.appID = _appid;
+        if (this.properties == null) {
+            this.properties = new HashMap<>();
+            this.properties.put("cmd", _cmd);
+            this.properties.put("appID", _appid);
         }
     }
 
@@ -46,10 +56,10 @@ public class D88Object {
         String json = new String(d88Decrypt);
         // step 4 JSON MODEL
         JSONObject jsonModel = new JSONObject(json);
-
         // step 5 hash map
         this.properties = this.toHashMap(jsonModel);
     }
+
     private HashMap<String, Object> toHashMap(JSONObject json) {
         HashMap<String, Object> maptemp = new HashMap<>();
 
@@ -71,7 +81,7 @@ public class D88Object {
                     int[] list = new int[jsonArray.length()];
                     for (int i = 0; i < jsonArray.length(); i++) {
                         list[i] = jsonArray.getInt(i);
-                       
+
                     }
                     maptemp.put(key, list);
                 } else {
@@ -98,11 +108,14 @@ public class D88Object {
                     maptemp.put(key, list);
                 } else {
                     maptemp.put(key, json.getBoolean(key));
-                }              
-            }
-            else if ("cmd".equals(key)) {
+                }
+            } else if ("cmd".equals(key)) {
                 maptemp.put(key, json.getString(key));
                 this.cmd = json.getString(key);
+            }
+            else if ("appID".equals(key)) {
+                maptemp.put(key, json.getString(key));
+                this.appID = json.getString(key);
             }
 
         }
@@ -122,20 +135,20 @@ public class D88Object {
         byte[] zip = D88Ziper.d88Compress(enCryptByte);
         return zip;
     }
-    
-    public boolean containsKey(String key){
-        if(this.properties.containsKey(prefix_String + key)){
+
+    public boolean containsKey(String key) {
+        if (this.properties.containsKey(prefix_String + key)) {
             return true;
-        }
-        else if(this.properties.containsKey(prefix_Integer + key)){
+        } else if (this.properties.containsKey(prefix_Integer + key)) {
             return true;
-        }
-        else if(this.properties.containsKey(prefix_Double + key)){
+        } else if (this.properties.containsKey(prefix_Double + key)) {
             return true;
+        } else {
+            return this.properties.containsKey(prefix_Boolean + key);
         }
-        else return this.properties.containsKey(prefix_Boolean + key);
     }
-    public String[] getKeys(){
+
+    public String[] getKeys() {
         String[] keys = new String[this.properties.keySet().size()];
         int t = 0;
         for (String key : this.properties.keySet()) {
@@ -144,7 +157,6 @@ public class D88Object {
         }
         return keys;
     }
-    
 
     // SET GET
     public String getCmd() {
@@ -156,10 +168,19 @@ public class D88Object {
         this.properties.put("cmd", cmd);
     }
 
+    public String getAppID() {
+        return (String) this.properties.get("appID");
+    }
+
+    public void setAppID(String appID) {
+        this.appID = appID;
+        this.properties.put("appID", appID);
+    }
+
     public void setStringForKey(String value, String key) {
         this.properties.put(prefix_String + key, value);
     }
-    
+
     public String getStringForKey(String key) {
         return (String) this.properties.get(prefix_String + key);
     }
@@ -215,14 +236,13 @@ public class D88Object {
     public boolean getBooleanForKey(String key) {
         return (boolean) this.properties.get(prefix_Boolean + key);
     }
-    public void setBooleansForKey(boolean [] value, String key) {
+
+    public void setBooleansForKey(boolean[] value, String key) {
         this.properties.put(prefix_Boolean + key, value);
     }
 
     public boolean[] getBooleansForKey(String key) {
         return (boolean[]) this.properties.get(prefix_Boolean + key);
     }
-    
-    
-    
+
 }

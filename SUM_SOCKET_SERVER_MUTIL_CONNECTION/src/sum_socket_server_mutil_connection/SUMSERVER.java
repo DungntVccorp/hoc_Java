@@ -2,7 +2,6 @@ package sum_socket_server_mutil_connection;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.UUID;
@@ -31,9 +30,6 @@ public class SUMSERVER implements Runnable{
             } catch (IOException ex) {
                 Logger.getLogger(SUMSERVER.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
         }
     }
-    
-    
 }

@@ -31,7 +31,7 @@ public final class SUM implements Runnable {
             AppShare.getInstance().getListClient().add(this);
             this.setClientName(uuid);
             this.socket = soc;
-            //this.socket.setSoTimeout(10000);
+            this.socket.setSoTimeout(30000);
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
