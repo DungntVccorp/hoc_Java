@@ -28,13 +28,15 @@ public final class SUM implements Runnable {
 
     public SUM(Socket soc, String uuid) {
         try {
+            System.out.println("Client Did Connect");
             AppShare.getInstance().getListClient().add(this);
             this.setClientName(uuid);
             this.socket = soc;
-            this.socket.setSoTimeout(30000);
+            this.socket.setSoTimeout(50000);
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
+            this.dout.writeBytes("Nhan Data Nay");
         } catch (IOException ex) {
             this.isConnection = false;
             Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,7 +55,8 @@ public final class SUM implements Runnable {
     public void sendMessageToAll(String messString) {
         for (int i = 0; i < AppShare.getInstance().getListClient().size(); i++) {
             if (!AppShare.getInstance().getListClient().get(i).getClientName().equals(this.getClientName())) {
-                AppShare.getInstance().getListClient().get(i).sendMessage(messString + "\n");
+                System.out.println("Send " + AppShare.getInstance().getListClient().get(i).getClientName());
+                AppShare.getInstance().getListClient().get(i).sendMessage(messString);
             }
         }
     }
@@ -67,6 +70,7 @@ public final class SUM implements Runnable {
             try {
                 String line = din.readLine();
                 if (line != null) {
+                    System.out.println(line);
                     this.sendMessageToAll(line);
                 }
             } catch (IOException ex) {
@@ -82,7 +86,6 @@ public final class SUM implements Runnable {
 
                 // Gửi tin nhắn cho những người còn lại
                 System.out.println("DISCONECT");
-               this.sendMessageToAll(this.getClientName() + " Disconec");
                 AppShare.getInstance().getListClient().remove(this);
             } catch (IOException ex) {
                 Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);

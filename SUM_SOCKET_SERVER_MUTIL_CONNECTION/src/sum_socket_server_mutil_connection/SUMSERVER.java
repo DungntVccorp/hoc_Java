@@ -14,6 +14,7 @@ public class SUMSERVER implements Runnable{
     
     public SUMSERVER() {
         try {
+            
             server = new ServerSocket(1234);
             System.out.println("Server Started!");
         } catch (IOException ex) {
