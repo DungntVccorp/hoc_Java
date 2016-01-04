@@ -32,7 +32,7 @@ public final class SUM implements Runnable {
             AppShare.getInstance().getListClient().add(this);
             this.setClientName(uuid);
             this.socket = soc;
-            this.socket.setSoTimeout(50000);
+            //this.socket.setSoTimeout(50000);
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
@@ -70,8 +70,14 @@ public final class SUM implements Runnable {
             try {
                 String line = din.readLine();
                 if (line != null) {
-                    System.out.println(line);
-                    this.sendMessageToAll(line);
+                    if("Ping".equals(line)){
+                        this.sendMessage("Pong\n");
+                    }
+                    else{
+                        System.out.println(line);
+                        this.sendMessageToAll(line);
+                    }
+                    
                 }
             } catch (IOException ex) {
                 isConnection = false;
