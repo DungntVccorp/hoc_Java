@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import xyz.d88.core.Object.D88Object;
 
 public final class SUM implements Runnable {
 
@@ -36,8 +37,22 @@ public final class SUM implements Runnable {
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
+            
+            
+            D88Object d88Object = new D88Object("hallo", "1234");
+        d88Object.setBooleansForKey(new boolean[] {true,false,true}, "booleanKey");
+        d88Object.setIntegersForKey(new int[] {1,2,3,4}, "intskey");
+        d88Object.setDoublesForKey(new double[] {1,2,3,4}, "double_key");
+        d88Object.setStringsForKey(new String[] {"a","b","c"}, "String_Key");
+        
+        byte[] toD88Message = d88Object.toD88Message();
+            System.out.println(toD88Message.length);
+            this.dout.write(toD88Message);
+            
         } catch (IOException ex) {
             this.isConnection = false;
+            Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -12,10 +12,10 @@ import javax.crypto.spec.SecretKeySpec;
  * @author dungnt
  */
 public class D88Crypto {
+    
     private static final String ALGO = "AES";
     private static final byte[] keyValue
-            = new byte[]{'T', 'h', 'e', 'B', 'e', 's', 't',
-                'S', 'e', 'c', 'r', 'e', 't', 'K', 'e', 'y'};
+            = "dung.nt.key.abcd".getBytes();
 
     public static byte[] d88Encrypt(byte[] Data) throws Exception {
         Key key = generateKey();

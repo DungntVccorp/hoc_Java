@@ -1,6 +1,7 @@
 package xyz.d88.core.Object;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.DataFormatException;
 import org.json.JSONArray;
@@ -49,6 +50,7 @@ public class D88Object {
         }
         // chuyển từ mảng byte về  object
         // Step 1 UNZIP
+        System.out.println(Arrays.toString(d88Message));
         byte[] dataUnzip = D88Ziper.d88Decompress(d88Message);
         // Step 2 UNCRYPT
         byte[] d88Decrypt = D88Crypto.d88Decrypt(dataUnzip);
@@ -125,14 +127,14 @@ public class D88Object {
     public byte[] toD88Message() throws Exception {
         // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
-        // STEP 2 to JSON STRING
+        // STEP 2 to JSON STRING -> ZIP -> ENCRYPT -> BYTE
         String json = jsonOBJ.toString();
         // STEP 3 to byte Array
         byte[] bytes = json.getBytes();
         // STEP 4 ENCRYPT
         byte[] enCryptByte = D88Crypto.d88Encrypt(bytes);
         // STEP 5 ZIP
-        byte[] zip = D88Ziper.d88Compress(enCryptByte);
+        byte[] zip = D88Ziper.d88Compress(bytes);
         return zip;
     }
 
