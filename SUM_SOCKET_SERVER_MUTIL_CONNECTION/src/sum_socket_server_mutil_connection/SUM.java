@@ -7,8 +7,14 @@ package sum_socket_server_mutil_connection;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPOutputStream;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public final class SUM implements Runnable {
 
@@ -18,6 +24,10 @@ public final class SUM implements Runnable {
     protected DataOutputStream dout = null;
     protected String ClientName = null;
 
+    static String IV = "AAAAAAAAAAAAAAAA";
+    static String plaintext = "test text 123\0\0\0"; /*Note null padding*/
+    static String encryptionKey = "0123456789abcdef";
+
     public String getClientName() {
         return ClientName;
     }
@@ -25,6 +35,36 @@ public final class SUM implements Runnable {
     public void setClientName(String ClientName) {
         this.ClientName = ClientName;
     }
+
+    public static byte[] d88Compress(byte[] data) throws IOException {
+        Deflater deflater = new Deflater();
+        deflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+
+        deflater.finish();
+        byte[] buffer = new byte[data.length];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        byte[] output = outputStream.toByteArray();
+
+        return output;
+    }
+
+    public static byte[] compress(byte[] data) throws IOException {
+        byte[] compressed;
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream(data.length)) {
+            GZIPOutputStream gos = new GZIPOutputStream(os);
+            gos.write(data);
+            gos.close();
+            compressed = os.toByteArray();
+        }
+        return compressed;
+    }
+
+    
 
     public SUM(Socket soc, String uuid) {
         try {
@@ -36,8 +76,18 @@ public final class SUM implements Runnable {
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
+            
+            byte[] encrypt = DBSCrypto.encrypt("dungnt889999999".getBytes("UTF-8"));
+            System.out.println(encrypt.length);
+            byte[] compress = compress(encrypt);
+            System.out.println(compress.length);
+            this.dout.write(compress);
+            
+            
         } catch (IOException ex) {
             this.isConnection = false;
+            Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(SUM.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -63,20 +113,19 @@ public final class SUM implements Runnable {
     @Override
     public void run() {
         while (isConnection) {
-            if(!this.socket.isConnected()){
+            if (!this.socket.isConnected()) {
                 isConnection = false;
             }
             try {
                 String line = din.readLine();
                 if (line != null) {
-                    if("Ping".equals(line)){
+                    if ("Ping".equals(line)) {
                         this.sendMessage("Pong\n");
-                    }
-                    else{
+                    } else {
                         System.out.println(line);
                         this.sendMessageToAll(line);
                     }
-                    
+
                 }
             } catch (IOException ex) {
                 isConnection = false;

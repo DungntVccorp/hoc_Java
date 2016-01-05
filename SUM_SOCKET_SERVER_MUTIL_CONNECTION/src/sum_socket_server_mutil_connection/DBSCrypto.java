@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.testobj;
+package sum_socket_server_mutil_connection;
 
 import java.security.Key;
 import javax.crypto.Cipher;
@@ -19,6 +19,7 @@ public class DBSCrypto {
             = "dung.nt.key.abcd".getBytes();
 
     public static byte[] encrypt(byte[] Data) throws Exception {
+        
         Key key = generateKey();
         Cipher c = Cipher.getInstance(ALGO);
         c.init(Cipher.ENCRYPT_MODE, key);

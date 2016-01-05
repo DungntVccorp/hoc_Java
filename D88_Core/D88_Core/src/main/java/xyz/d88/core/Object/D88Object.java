@@ -134,7 +134,8 @@ public class D88Object {
         // STEP 4 ENCRYPT
         byte[] enCryptByte = D88Crypto.d88Encrypt(bytes);
         // STEP 5 ZIP
-        byte[] zip = D88Ziper.d88Compress(bytes);
+        byte[] zip = D88Ziper.d88Compress(enCryptByte);
+        
         return zip;
     }
 

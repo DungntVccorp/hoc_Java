@@ -5,44 +5,43 @@
  */
 package xyz.d88.core.Common;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
+
 /**
  *
  * @author dungnt
  */
 public class D88Ziper {
-    public static byte[] d88Compress(byte[] data) throws IOException {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
 
-        deflater.finish();
-        byte[] buffer = new byte[data.length];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer);
-            outputStream.write(buffer, 0, count);
-        }
-        outputStream.close();
-        byte[] output = outputStream.toByteArray();
-
-        return output;
+    public static byte[] d88Compress(byte[] data) throws Exception {
+        byte[] compressed;
+        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
+        GZIPOutputStream gos = new GZIPOutputStream(os);
+        gos.write(data);
+        gos.close();
+        compressed = os.toByteArray();
+        return compressed;
     }
-    public static byte[] d88Decompress(byte[] data) throws IOException, DataFormatException {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!inflater.finished()) {
-            int count = inflater.inflate(buffer);
-            outputStream.write(buffer, 0, count);
-        }
-        outputStream.close();
-        byte[] output = outputStream.toByteArray();
 
-        return output;
+    public static byte[] d88Decompress(byte[] data) throws Exception {
+        final int BUFFER_SIZE = 32;
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
+        StringBuilder string = new StringBuilder();
+        byte[] _data = new byte[BUFFER_SIZE];
+        int bytesRead;
+        while ((bytesRead = gis.read(_data)) != -1) {
+            string.append(new String(_data, 0, bytesRead));
+        }
+        gis.close();
+        is.close();
+        return string.toString().getBytes();
     }
 }

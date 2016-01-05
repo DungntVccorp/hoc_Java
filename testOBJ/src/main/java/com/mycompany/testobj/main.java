@@ -5,12 +5,12 @@
  */
 package com.mycompany.testobj;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import net.lingala.zip4j.core.ZipFile;
 
 
 /**
@@ -19,7 +19,28 @@ import java.util.zip.GZIPOutputStream;
  */
 public class main {
 
-    
+    public static byte[] compress(String string) throws IOException {
+        byte[] compressed;
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream(string.length())) {
+            GZIPOutputStream gos = new GZIPOutputStream(os);
+            gos.write(string.getBytes());
+            gos.close();
+            compressed = os.toByteArray();
+        }
+    return compressed;
+}
+    public static String decompress(byte[] compressed) throws IOException {
+    final int BUFFER_SIZE = 32;
+    StringBuilder string;
+        try (ByteArrayInputStream is = new ByteArrayInputStream(compressed); GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE)) {
+            string = new StringBuilder();
+            byte[] data = new byte[BUFFER_SIZE];
+            int bytesRead;
+            while ((bytesRead = gis.read(data)) != -1) {
+                string.append(new String(data, 0, bytesRead));
+            }              }
+    return string.toString();
+}
     public static void main(String[] args) throws Exception {
 
         
@@ -44,14 +65,14 @@ public class main {
 //        }
         
         
-        String str = "I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh";
+        String str = "I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh ha ha ha ha ha";
         
         System.out.println(str.getBytes().length);
-        byte[] compress = DBSZiper.compress(str.getBytes());
+        byte[] compress = compress(str);
         System.out.println(compress.length);
-        byte[] decompress = DBSZiper.decompress(compress);
-        System.out.println(decompress.length);
-        System.out.println(new String(decompress));
-       
+        String newSTR = decompress(compress);
+        System.out.println(newSTR.getBytes().length);
+        System.out.println(newSTR);
+        
     }
 }
