@@ -1,8 +1,8 @@
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.BitSet;
+import xyz.d88.core.Object.D88Object;
 
 public class main {
 
@@ -48,7 +48,7 @@ public class main {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println("Hello word");
 //        String s2 = String.format("%2s", Integer.toBinaryString(3)).replace(' ', '0'); // 2 bit
 //        String s3 = String.format("%2s", Integer.toBinaryString(3)).replace(' ', '0'); // 2 bit
@@ -63,20 +63,32 @@ public class main {
 //
 //            System.out.println(i / 8);
 //
-        byte[] intToBytes = hexStringToByteArray("FFFFFF");
-        System.out.println(intToBytes.length);
-        System.out.println(toBinary(intToBytes));
-        System.out.println(Integer.bitCount(16777215));
-        System.out.println(Integer.toBinaryString(16777215));
-        int foo = Integer.parseInt("000000000001", 2);
-        System.out.println(foo);
-        String toBinary = toBinary(intToBytes);
-        String substring = toBinary.substring(toBinary.length() - 2, toBinary.length());
-        int foo2 = Integer.parseInt(substring, 2);
-        System.out.println(foo2);
-        String substring2 = toBinary.substring(toBinary.length() - 24, toBinary.length() - 12);
-        int foo3 = Integer.parseInt(substring2, 2);
-        System.out.println(foo3);
+//        byte[] intToBytes = hexStringToByteArray("FFFFFF");
+//        System.out.println(intToBytes.length);
+//        System.out.println(toBinary(intToBytes));
+//        System.out.println(Integer.bitCount(16777215));
+//        System.out.println(Integer.toBinaryString(3));
+//        int foo = Integer.parseInt("000000000001", 2);
+//        System.out.println(foo);
+//        String toBinary = toBinary(intToBytes);
+//        String substring = toBinary.substring(toBinary.length() - 2, toBinary.length());
+//        int foo2 = Integer.parseInt(substring, 2);
+//        System.out.println(foo2);
+//        String substring2 = toBinary.substring(toBinary.length() - 24, toBinary.length() - 12);
+//        int foo3 = Integer.parseInt(substring2, 2);
+//        System.out.println(foo3);
+        D88Object d88Object = new D88Object("ping");
+        d88Object.setStringForKey("test 1234 dungnt vccorp","datatest");
+        byte[] toD88Message = d88Object.toD88Message();
+        System.out.println(toBinary(toD88Message));
+        
+        D88Object d88Object1 = new D88Object(toD88Message);
+        System.out.println(d88Object1.getCmd());
+        System.out.println(d88Object1.getObjVer());
+        System.out.println(d88Object1.getObjAppID());
+        System.out.println(d88Object1.getObjForm());
+        System.out.println(d88Object1.getStringForKey("datatest"));
+        
     }
 
 }

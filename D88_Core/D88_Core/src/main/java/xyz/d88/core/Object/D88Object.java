@@ -1,6 +1,8 @@
 package xyz.d88.core.Object;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.DataFormatException;
@@ -8,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import xyz.d88.core.Common.D88Crypto;
 import xyz.d88.core.Common.D88Ziper;
+//                 DATA SEND AND RECEIVE
 //                 +---------+--------+----------+----------+------------+
 //                 |  TYPE   | DEVICE |   APPID  |   VER    |    DATA    |
 //                 +---------+--------+----------+----------+------------+
@@ -17,31 +20,43 @@ import xyz.d88.core.Common.D88Ziper;
 //                 +----------+-------------------------------------------+
 //                 |   TYPE   |                DESCRIPTION                |
 //                 +----------+-------------------------------------------+
-//                 |    0     | object type user                          |
+//                 |    0     | user                                      |
 //                 +----------+-------------------------------------------+
-//                 |    1     | object type request and response data     |
+//                 |    1     | request                                   |
 //                 +----------+-------------------------------------------+
-//                 |    2     |                                           |
+//                 |    2     | Chat                                      |
 //                 +----------+-------------------------------------------+
-//                 |  DEVICE  |                                           |
+//                 |    3     | OTHER                                     |
+//                 +----------+-------------------------------------------+
+//                 |  DEVICE  | Mã ngôn ngữ tạo ra model này              |
 //                 +----------+-------------------------------------------+
 //                 |    0     |   Create by Server                        |
 //                 +----------+-------------------------------------------+
 //                 |    1     |   JAVA                                    |
 //                 +----------+-------------------------------------------+
-//                 |    2     |   IOS                                     |
+//                 |    2     |   SWIFT , OBJECTIVE C                     |
 //                 +----------+-------------------------------------------+
-//                 |    3     |   .Net                                    |
+//                 |    3     |   .NET                                    |
 //                 +----------+-------------------------------------------+
+//                 +----------+-------------------------------------------+
+//                 |  APPID   | ID Của App Giao Tiếp Với Server           |
+//                 +----------+-------------------------------------------+
+//                 |   VER    | VER Của OBJ để quản lý hàm theo version   |
+//                 +----------+-------------------------------------------+
+//                 |   DATA   | Quản lý dữ liệu của obj theo gzip         |
+//                 +----------+-------------------------------------------+
+// SERVER
+// CREATE   24 bit info
+// READ     24 bit info
 public class D88Object {
 
-    private String  cmd                 = "";
-    private String  appID               = "";
-    private int     objType             = -1;
-    private int     objForm             =  0; // SERVER CREATE
-    private int     objAppID            = -1;
-    private int     objVer              = -1;
-    
+    private String cmd = "";
+    private String appID = "";
+
+    private int objType = 0;
+    private int objForm = 0; // SERVER CREATE
+    private int objAppID = 0;
+    private int objVer = 0;
 
     private HashMap<String, Object> properties = null;
     private static final String prefix_String = "s_"; // String
@@ -62,8 +77,14 @@ public class D88Object {
             this.properties = new HashMap<>();
             this.properties.put("cmd", _cmd);
         }
+        this.objType = 1;
+        this.objForm = 2;
+        this.objAppID = 1234;
+        this.objVer = 123;
+
     }
-    public D88Object(String _cmd,String _appid) {
+
+    public D88Object(String _cmd, String _appid) {
         this.cmd = _cmd;
         this.appID = _appid;
         if (this.properties == null) {
@@ -72,31 +93,36 @@ public class D88Object {
             this.properties.put("appID", _appid);
         }
     }
-    
-    private byte [] onCreateObjectInfo(){
-        byte[] bytes = new byte[3];
-        
-        
-        return null;
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
     }
 
-    public D88Object(byte[] d88Message) throws IOException, DataFormatException, Exception {
-        if (this.properties == null) {
-            this.properties = new HashMap<>();
-        }
-        // chuyển từ mảng byte về  object
-        // Step 1 UNZIP
-        System.out.println(Arrays.toString(d88Message));
-        byte[] dataUnzip = D88Ziper.d88Decompress(d88Message);
-        // Step 2 UNCRYPT
-        byte[] d88Decrypt = D88Crypto.d88Decrypt(dataUnzip);
-        // Step 3 JSON STRING
-        String json = new String(d88Decrypt);
-        // step 4 JSON MODEL
-        JSONObject jsonModel = new JSONObject(json);
-        // step 5 hash map
-        this.properties = this.toHashMap(jsonModel);
+    public byte[] onCreateObjectInfo() {
+        String objTypeString = String.format("%2s", Integer.toBinaryString(this.objType)).replace(' ', '0');
+        String objFormString = String.format("%2s", Integer.toBinaryString(this.objForm)).replace(' ', '0');
+        String objAppIDString = String.format("%12s", Integer.toBinaryString(this.objAppID)).replace(' ', '0');
+        String objVerString = String.format("%8s", Integer.toBinaryString(this.objVer)).replace(' ', '0');
+        String info = objVerString + objAppIDString + objFormString + objTypeString;
+        return new BigInteger(info, 2).toByteArray();
     }
+    public void onRetoreInfo(byte[] info){
+        String toBinary = toBinary(info);
+        System.out.println(toBinary);
+        this.objType = Integer.parseInt(toBinary.substring(toBinary.length() - 2, toBinary.length()), 2);
+        this.objForm = Integer.parseInt(toBinary.substring(toBinary.length() - 4, toBinary.length() - 2), 2);
+        this.objAppID = Integer.parseInt(toBinary.substring(toBinary.length() - 16, toBinary.length() - 4), 2);
+        this.objVer = Integer.parseInt(toBinary.substring(toBinary.length() - 24, toBinary.length() - 16), 2);
+        
+    }
+
+    
 
     private HashMap<String, Object> toHashMap(JSONObject json) {
         HashMap<String, Object> maptemp = new HashMap<>();
@@ -150,8 +176,7 @@ public class D88Object {
             } else if ("cmd".equals(key)) {
                 maptemp.put(key, json.getString(key));
                 this.cmd = json.getString(key);
-            }
-            else if ("appID".equals(key)) {
+            } else if ("appID".equals(key)) {
                 maptemp.put(key, json.getString(key));
                 this.appID = json.getString(key);
             }
@@ -160,20 +185,45 @@ public class D88Object {
         return maptemp;
     }
 
+    public byte[] concatenateByteArrays(byte[] a, byte[] b) {
+        byte[] result = new byte[a.length + b.length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+    
     public byte[] toD88Message() throws Exception {
         // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
-        // STEP 2 to JSON STRING -> ZIP -> ENCRYPT -> BYTE
-        String json = jsonOBJ.toString();
-        // STEP 3 to byte Array
-        byte[] bytes = json.getBytes();
-        // STEP 4 ENCRYPT
-        byte[] enCryptByte = D88Crypto.d88Encrypt(bytes);
-        // STEP 5 ZIP
-        byte[] zip = D88Ziper.d88Compress(enCryptByte);
-        
-        return zip;
+        // STEP 2 to JSON STRING AND GZIP
+        byte[] zip = D88Ziper.d88Compress(jsonOBJ.toString());
+        // STEP 3 APPEN INFO
+        return concatenateByteArrays(zip, onCreateObjectInfo());
     }
+    public static String toBinary(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(bytes.length * Byte.SIZE);
+        for (int i = 0; i < Byte.SIZE * bytes.length; i++) {
+            sb.append((bytes[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
+        }
+        return sb.toString();
+    }
+    public D88Object(byte[] d88Message) throws IOException, DataFormatException, Exception {
+        if (this.properties == null) {
+            this.properties = new HashMap<>();
+        }
+        // kiểm tra xem message có hơp lệ không > 3  byte
+        if (d88Message.length >= 3) {
+            // lấy ra 3 byte cuối để xác định info 
+            // những file còn lại là file rawdata cần unzip
+            byte[] dataInfo = Arrays.copyOfRange(d88Message, d88Message.length - 3, d88Message.length);
+            this.onRetoreInfo(dataInfo);
+            byte[] rawData = Arrays.copyOfRange(d88Message, 0, d88Message.length - 3);
+            String d88Decompress = D88Ziper.d88Decompress(rawData);
+            JSONObject jsonModel = new JSONObject(d88Decompress);
+            this.properties = this.toHashMap(jsonModel);
+        }
+    }
+    
 
     public boolean containsKey(String key) {
         if (this.properties.containsKey(prefix_String + key)) {

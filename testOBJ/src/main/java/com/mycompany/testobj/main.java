@@ -12,7 +12,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import net.lingala.zip4j.core.ZipFile;
 
-
 /**
  *
  * @author dungnt
@@ -27,23 +26,25 @@ public class main {
             gos.close();
             compressed = os.toByteArray();
         }
-    return compressed;
-}
+        return compressed;
+    }
+
     public static String decompress(byte[] compressed) throws IOException {
-    final int BUFFER_SIZE = 32;
-    StringBuilder string;
+        final int BUFFER_SIZE = 32;
+        StringBuilder string;
         try (ByteArrayInputStream is = new ByteArrayInputStream(compressed); GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE)) {
             string = new StringBuilder();
             byte[] data = new byte[BUFFER_SIZE];
             int bytesRead;
             while ((bytesRead = gis.read(data)) != -1) {
                 string.append(new String(data, 0, bytesRead));
-            }              }
-    return string.toString();
-}
+            }
+        }
+        return string.toString();
+    }
+
     public static void main(String[] args) throws Exception {
 
-        
 //        DBSObject dbsObject = new DBSObject("d_pl");
 //        dbsObject.setStringForKey("123", "d_pl_a");
 //        dbsObject.setStringsForKey(new String[] { "foo", "bar" , "bar1" , "ba2" }, "d_pl_b");
@@ -63,16 +64,14 @@ public class main {
 //        for (String stringsForKey1 : stringsForKey) {
 //            System.out.println(stringsForKey1);
 //        }
-        
-        
         String str = "I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh I am what I am hhhhhhhhhhhhhhhhhhhhhhhhhhhhh ha ha ha ha ha";
-        
+
         System.out.println(str.getBytes().length);
         byte[] compress = compress(str);
         System.out.println(compress.length);
         String newSTR = decompress(compress);
         System.out.println(newSTR.getBytes().length);
         System.out.println(newSTR);
-        
+
     }
 }
