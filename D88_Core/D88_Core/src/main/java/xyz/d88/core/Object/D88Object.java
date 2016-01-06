@@ -2,13 +2,11 @@ package xyz.d88.core.Object;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.zip.DataFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import xyz.d88.core.Common.D88Crypto;
 import xyz.d88.core.Common.D88Ziper;
 //                 DATA SEND AND RECEIVE
 //                 +---------+--------+----------+----------+------------+
@@ -77,10 +75,10 @@ public class D88Object {
             this.properties = new HashMap<>();
             this.properties.put("cmd", _cmd);
         }
-        this.objType = 1;
-        this.objForm = 2;
-        this.objAppID = 1234;
-        this.objVer = 123;
+        this.objType = 1; // default
+        this.objForm = 0; // SERVER
+        this.objAppID = 1234; // GET FORM CONFIG
+        this.objVer = 123; // GET FORM CONFIG
 
     }
 
@@ -197,6 +195,8 @@ public class D88Object {
         JSONObject jsonOBJ = new JSONObject(this.properties);
         // STEP 2 to JSON STRING AND GZIP
         byte[] zip = D88Ziper.d88Compress(jsonOBJ.toString());
+        System.out.println(toBinary(jsonOBJ.toString().getBytes()));
+        System.out.println(zip);
         // STEP 3 APPEN INFO
         return concatenateByteArrays(zip, onCreateObjectInfo());
     }

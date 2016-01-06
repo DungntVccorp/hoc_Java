@@ -27,7 +27,6 @@ public class D88Ziper {
         }
         return compressed;
     }
-
     public static String d88Decompress(byte[] compressed) throws IOException {
         final int BUFFER_SIZE = 32;
         StringBuilder string;

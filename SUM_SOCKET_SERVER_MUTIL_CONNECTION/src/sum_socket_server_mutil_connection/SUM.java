@@ -64,7 +64,13 @@ public final class SUM implements Runnable {
         return compressed;
     }
 
-    
+    public static String toBinary(byte[] bytes) {
+        StringBuilder sb = new StringBuilder(bytes.length * Byte.SIZE);
+        for (int i = 0; i < Byte.SIZE * bytes.length; i++) {
+            sb.append((bytes[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
+        }
+        return sb.toString();
+    }
 
     public SUM(Socket soc, String uuid) {
         try {
@@ -76,7 +82,7 @@ public final class SUM implements Runnable {
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
-
+            System.out.println(toBinary("dungnt889999999".getBytes("UTF-8")));
             byte[] compress = compress("dungnt889999999".getBytes("UTF-8"));
             System.out.println(compress.length);
             this.dout.write(compress);
