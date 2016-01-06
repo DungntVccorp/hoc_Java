@@ -76,10 +76,8 @@ public final class SUM implements Runnable {
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;
-            
-            byte[] encrypt = DBSCrypto.encrypt("dungnt889999999".getBytes("UTF-8"));
-            System.out.println(encrypt.length);
-            byte[] compress = compress(encrypt);
+
+            byte[] compress = compress("dungnt889999999".getBytes("UTF-8"));
             System.out.println(compress.length);
             this.dout.write(compress);
             

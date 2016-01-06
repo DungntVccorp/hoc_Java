@@ -8,11 +8,40 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import xyz.d88.core.Common.D88Crypto;
 import xyz.d88.core.Common.D88Ziper;
+//                 +---------+--------+----------+----------+------------+
+//                 |  TYPE   | DEVICE |   APPID  |   VER    |    DATA    |
+//                 +---------+--------+----------+----------+------------+
+//                 |    2    |   2    |    12    |    8     |   x - 24   | bit
+//                 +---------+--------+----------+----------+------------+
 
+//                 +----------+-------------------------------------------+
+//                 |   TYPE   |                DESCRIPTION                |
+//                 +----------+-------------------------------------------+
+//                 |    0     | object type user                          |
+//                 +----------+-------------------------------------------+
+//                 |    1     | object type request and response data     |
+//                 +----------+-------------------------------------------+
+//                 |    2     |                                           |
+//                 +----------+-------------------------------------------+
+//                 |  DEVICE  |                                           |
+//                 +----------+-------------------------------------------+
+//                 |    0     |   Create by Server                        |
+//                 +----------+-------------------------------------------+
+//                 |    1     |   JAVA                                    |
+//                 +----------+-------------------------------------------+
+//                 |    2     |   IOS                                     |
+//                 +----------+-------------------------------------------+
+//                 |    3     |   .Net                                    |
+//                 +----------+-------------------------------------------+
 public class D88Object {
 
-    private String cmd = "";
-    private String appID = "";
+    private String  cmd                 = "";
+    private String  appID               = "";
+    private int     objType             = -1;
+    private int     objForm             =  0; // SERVER CREATE
+    private int     objAppID            = -1;
+    private int     objVer              = -1;
+    
 
     private HashMap<String, Object> properties = null;
     private static final String prefix_String = "s_"; // String
@@ -42,6 +71,13 @@ public class D88Object {
             this.properties.put("cmd", _cmd);
             this.properties.put("appID", _appid);
         }
+    }
+    
+    private byte [] onCreateObjectInfo(){
+        byte[] bytes = new byte[3];
+        
+        
+        return null;
     }
 
     public D88Object(byte[] d88Message) throws IOException, DataFormatException, Exception {
@@ -248,4 +284,19 @@ public class D88Object {
         return (boolean[]) this.properties.get(prefix_Boolean + key);
     }
 
+    public int getObjType() {
+        return objType;
+    }
+
+    public int getObjForm() {
+        return objForm;
+    }
+
+    public int getObjAppID() {
+        return objAppID;
+    }
+
+    public int getObjVer() {
+        return objVer;
+    }
 }
