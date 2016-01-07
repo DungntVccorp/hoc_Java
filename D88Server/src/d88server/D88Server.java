@@ -5,6 +5,11 @@
  */
 package d88server;
 
+import d88server.core.service.D88Service;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author dungnt
@@ -15,7 +20,11 @@ public class D88Server {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("HELLO");
+        try {
+            D88Service.getInstance().doStartService();
+        } catch (IOException ex) {
+            Logger.getLogger(D88Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
