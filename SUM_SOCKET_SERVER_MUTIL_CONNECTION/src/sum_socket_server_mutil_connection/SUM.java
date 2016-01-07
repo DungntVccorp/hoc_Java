@@ -7,14 +7,10 @@ package sum_socket_server_mutil_connection;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public final class SUM implements Runnable {
 
@@ -78,7 +74,7 @@ public final class SUM implements Runnable {
             AppShare.getInstance().getListClient().add(this);
             this.setClientName(uuid);
             this.socket = soc;
-            //this.socket.setSoTimeout(50000);
+            this.socket.setSoTimeout(60000);
             this.din = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.dout = new DataOutputStream(this.socket.getOutputStream());
             this.isConnection = true;

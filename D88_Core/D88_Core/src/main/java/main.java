@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.BitSet;
 import xyz.d88.core.Object.D88Object;
 import xyz.d88.core.Server.D88Server;
+import xyz.d88.core.Server.D88Share;
+import xyz.d88.core.Server.D88ShareServer;
+import xyz.d88.core.Server.NewClassTest;
 
 public class main {
 
@@ -90,8 +93,7 @@ public class main {
 //        System.out.println(d88Object1.getObjVer());
 //        
 //        System.out.println(d88Object1.getStringForKey("datatest"));
-        D88Server d88Server = new D88Server();
-        d88Server.StartServer();
+        D88ShareServer.getInstance().getExxecutors().execute(new NewClassTest());
         
         
     }

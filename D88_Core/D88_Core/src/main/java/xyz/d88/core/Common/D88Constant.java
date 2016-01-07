@@ -10,5 +10,6 @@ package xyz.d88.core.Common;
  * @author dungnt
  */
 public class D88Constant {
-    public static final String SERVER_PORT = "SERVER_PORT";
+    public static final String SERVER_PORT                      = "SERVER_PORT";
+    public static final String CLIENT_MAX_CONNECTION            = "CLIENT_MAX_CONNECTION";
 }
