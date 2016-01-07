@@ -3,6 +3,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.BitSet;
 import xyz.d88.core.Object.D88Object;
+import xyz.d88.core.Server.D88Server;
 
 public class main {
 
@@ -77,17 +78,21 @@ public class main {
 //        String substring2 = toBinary.substring(toBinary.length() - 24, toBinary.length() - 12);
 //        int foo3 = Integer.parseInt(substring2, 2);
 //        System.out.println(foo3);
-        D88Object d88Object = new D88Object("ping");
-        d88Object.setStringForKey("test 1234 dungnt vccorp","datatest");
-        byte[] toD88Message = d88Object.toD88Message();
-        System.out.println(toBinary(toD88Message));
+//        D88Object d88Object = new D88Object("ping");
+//        d88Object.setStringForKey("test 1234 dungnt vccorp","datatest");
+//        byte[] toD88Message = d88Object.toD88Message();
+//        
+//        D88Object d88Object1 = new D88Object(toD88Message);
+//        System.out.println(d88Object1.getCmd());
+//        System.out.println(d88Object1.getObjVer());
+//        System.out.println(d88Object1.getObjAppID());
+//        System.out.println(d88Object1.getObjForm());
+//        System.out.println(d88Object1.getObjVer());
+//        
+//        System.out.println(d88Object1.getStringForKey("datatest"));
+        D88Server d88Server = new D88Server();
+        d88Server.StartServer();
         
-        D88Object d88Object1 = new D88Object(toD88Message);
-        System.out.println(d88Object1.getCmd());
-        System.out.println(d88Object1.getObjVer());
-        System.out.println(d88Object1.getObjAppID());
-        System.out.println(d88Object1.getObjForm());
-        System.out.println(d88Object1.getStringForKey("datatest"));
         
     }
 

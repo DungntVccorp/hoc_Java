@@ -54,7 +54,7 @@ public class D88Object {
     private int objType = 0;
     private int objForm = 0; // SERVER CREATE
     private int objAppID = 0;
-    private int objVer = 0;
+    private int objVer = 1;
 
     private HashMap<String, Object> properties = null;
     private static final String prefix_String = "s_"; // String
@@ -75,11 +75,6 @@ public class D88Object {
             this.properties = new HashMap<>();
             this.properties.put("cmd", _cmd);
         }
-        this.objType = 1; // default
-        this.objForm = 0; // SERVER
-        this.objAppID = 1234; // GET FORM CONFIG
-        this.objVer = 123; // GET FORM CONFIG
-
     }
 
     public D88Object(String _cmd, String _appid) {
@@ -112,12 +107,10 @@ public class D88Object {
     }
     public void onRetoreInfo(byte[] info){
         String toBinary = toBinary(info);
-        System.out.println(toBinary);
         this.objType = Integer.parseInt(toBinary.substring(toBinary.length() - 2, toBinary.length()), 2);
         this.objForm = Integer.parseInt(toBinary.substring(toBinary.length() - 4, toBinary.length() - 2), 2);
         this.objAppID = Integer.parseInt(toBinary.substring(toBinary.length() - 16, toBinary.length() - 4), 2);
         this.objVer = Integer.parseInt(toBinary.substring(toBinary.length() - 24, toBinary.length() - 16), 2);
-        
     }
 
     
@@ -195,8 +188,6 @@ public class D88Object {
         JSONObject jsonOBJ = new JSONObject(this.properties);
         // STEP 2 to JSON STRING AND GZIP
         byte[] zip = D88Ziper.d88Compress(jsonOBJ.toString());
-        System.out.println(toBinary(jsonOBJ.toString().getBytes()));
-        System.out.println(zip);
         // STEP 3 APPEN INFO
         return concatenateByteArrays(zip, onCreateObjectInfo());
     }
