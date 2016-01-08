@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  * @author dungnt
  */
 public final class D88Service implements D88NetworkServiceDelegate,D88ClientConnectionDelegate{
-    
+    private static final D88Service INSTANCE = new D88Service();
     
     private ExecutorService exxecutors;
     private ArrayList<D88ClientConnection> connections;
@@ -24,12 +24,10 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
     private boolean isStart = false;
     
     public static D88Service getInstance() {
-        return AppShareHolder.INSTANCE;
+        return INSTANCE;
     }
     
-    private static class AppShareHolder {
-        private static final D88Service INSTANCE = new D88Service();
-    }
+    
 
     public D88Service() {
         this.setExxecutors(Executors.newCachedThreadPool());
@@ -53,8 +51,7 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
     }
     
     public void doStartService() throws IOException{
-        this.networkService = new D88NetworkService();
-        this.networkService.setDelegate(this);
+        this.networkService = new D88NetworkService(this);
         this.getExxecutors().execute(this.networkService);
         
     }
@@ -71,6 +68,7 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
     @Override
     public void didStartNetworkService() {
         this.isStart = true;
+        System.out.println("SERVICE DID STARTED!");
     }
 
     @Override
@@ -94,6 +92,7 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
         this.connections.add(client);
         this.exxecutors.execute(client);
     }
+    
     // D88ClientConnectionDelegate DELEGATE
 
     @Override
