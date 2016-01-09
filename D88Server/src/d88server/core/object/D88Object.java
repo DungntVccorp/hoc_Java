@@ -44,9 +44,25 @@ import org.json.JSONObject;
 //                 +----------+-------------------------------------------+
 //                 |   DATA   | Quản lý dữ liệu của obj theo gzip         |
 //                 +----------+-------------------------------------------+
-// SERVER
-// CREATE   24 bit info
-// READ     24 bit info
+//                 DATA OF OBJECT
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |       BOOL       | Boolean value                                      |            o_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |    ARRAY BOOL    | Array Boolean value                                |            o_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |      DOUBLE      | Double  value                                      |            d_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |   ARRAY DOUBLE   | Array Double value                                 |            d_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |      STRING      | String  value                                      |            s_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |   ARRAY STRING   | Array String value                                 |            s_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |     Interger     | int  value                                         |            i_           |
+//                 +------------------+------------------------------------------------------------------------------+
+//                 |   ARRAY Interer  | Array Interger value                               |            i_           |
+//                 +------------------+------------------------------------------------------------------------------+
+
 public class D88Object {
 
     private String cmd = "";
@@ -188,6 +204,7 @@ public class D88Object {
     public byte[] getMessage() throws Exception {
         // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
+        System.out.println(jsonOBJ.toString());
         // STEP 2 to JSON STRING AND GZIP
         byte[] zip = D88Ziper.d88Compress(jsonOBJ.toString());
         // STEP 3 APPEN INFO
@@ -212,6 +229,7 @@ public class D88Object {
             this.onRetoreInfo(dataInfo);
             byte[] rawData = Arrays.copyOfRange(d88Message, 0, d88Message.length - 3);
             String d88Decompress = D88Ziper.d88Decompress(rawData);
+            System.out.println(d88Decompress);
             JSONObject jsonModel = new JSONObject(d88Decompress);
             this.properties = this.toHashMap(jsonModel);
         }

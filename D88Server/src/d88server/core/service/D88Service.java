@@ -8,10 +8,12 @@ package d88server.core.service;
 import d88server.core.object.D88Object;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.DataFormatException;
 
 /**
  *
@@ -106,7 +108,22 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
     // D88ClientConnectionDelegate DELEGATE
     @Override
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient) {
-        System.out.println(new String(message) + formClient.getClientName());
+        try {
+            D88Object d88Object = new D88Object(message);
+            System.out.println(d88Object.getCmd());
+            System.out.println(d88Object.getObjVer());
+            System.out.println(d88Object.getObjAppID());
+            System.out.println(d88Object.getObjForm());
+            System.out.println(d88Object.getObjType());
+            System.out.println(Arrays.toString(d88Object.getBooleansForKey("o_b")));
+            d88Object.setCmd("pong");
+            formClient.sendMessage(d88Object.getMessage());
+            
+        } catch (DataFormatException ex) {
+            System.out.println(ex.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(D88Service.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
