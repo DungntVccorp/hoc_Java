@@ -52,7 +52,7 @@ public class D88Object {
     private String cmd = "";
     private String appID = "";
 
-    private int objType = 0;
+    private int objType = 3;
     private int objForm = 0; // SERVER CREATE
     private int objAppID = 0;
     private int objVer = 1;
@@ -104,6 +104,7 @@ public class D88Object {
         String objAppIDString = String.format("%12s", Integer.toBinaryString(this.objAppID)).replace(' ', '0');
         String objVerString = String.format("%8s", Integer.toBinaryString(this.objVer)).replace(' ', '0');
         String info = objVerString + objAppIDString + objFormString + objTypeString;
+        System.out.println(toBinary(new BigInteger(info, 2).toByteArray()));
         return new BigInteger(info, 2).toByteArray();
     }
     public void onRetoreInfo(byte[] info){
@@ -184,7 +185,7 @@ public class D88Object {
         return result;
     }
     
-    public byte[] toD88Message() throws Exception {
+    public byte[] getMessage() throws Exception {
         // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
         // STEP 2 to JSON STRING AND GZIP

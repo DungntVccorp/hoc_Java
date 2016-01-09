@@ -38,7 +38,7 @@ public class D88ClientConnection implements Runnable {
         this.ClientName = UUID.randomUUID().toString();
         try {
             this.cSocket = _acceptSocket;
-            this.cSocket.setSoTimeout(60000);
+            //this.cSocket.setSoTimeout(60000);
             this.din = new DataInputStream(this.cSocket.getInputStream());
             this.dout = new DataOutputStream(this.cSocket.getOutputStream());
             this.isConnection = true;
@@ -103,6 +103,8 @@ public class D88ClientConnection implements Runnable {
 
     public void sendMessage(byte[] message) {
         try {
+            System.out.println("SEND " + message.length + " BYTE");
+           
             this.dout.write(message);
         } catch (IOException ex) {
             if (this.delegate != null) {

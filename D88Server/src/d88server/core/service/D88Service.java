@@ -5,35 +5,37 @@
  */
 package d88server.core.service;
 
+import d88server.core.object.D88Object;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author dungnt
  */
-public final class D88Service implements D88NetworkServiceDelegate,D88ClientConnectionDelegate{
+public final class D88Service implements D88NetworkServiceDelegate, D88ClientConnectionDelegate {
+
     private static final D88Service INSTANCE = new D88Service();
-    
+
     private ExecutorService exxecutors;
     private ArrayList<D88ClientConnection> connections;
     private D88NetworkService networkService;
-    
+
     private boolean isStart = false;
-    
+
     public static D88Service getInstance() {
         return INSTANCE;
     }
-    
-    
 
     public D88Service() {
         this.setExxecutors(Executors.newCachedThreadPool());
         this.connections = new ArrayList<>();
     }
-    
+
     public ExecutorService getExxecutors() {
         return exxecutors;
     }
@@ -49,22 +51,22 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
     public void setListClient(ArrayList<D88ClientConnection> listClient) {
         this.connections = listClient;
     }
-    
-    public void doStartService() throws IOException{
+
+    public void doStartService() throws IOException {
         this.networkService = new D88NetworkService(this);
         this.getExxecutors().execute(this.networkService);
-        
+
     }
-    public void doEndService(){
-        
+
+    public void doEndService() {
+
     }
-    
-    public boolean serviceIsStared(){
+
+    public boolean serviceIsStared() {
         return isStart;
     }
-    
-    // D88NetworkServiceDelegate DELEGATE
 
+    // D88NetworkServiceDelegate DELEGATE
     @Override
     public void didStartNetworkService() {
         this.isStart = true;
@@ -84,42 +86,38 @@ public final class D88Service implements D88NetworkServiceDelegate,D88ClientConn
 
     @Override
     public void ClientDidConnect(D88ClientConnection client) {
-        String messageOnline = client.getClientName() + " is Online\n";
-        connections.stream().forEach((connection) -> {
-            connection.sendMessage(messageOnline.getBytes());
-        });
-        client.setDelegate(this);
-        this.connections.add(client);
-        this.exxecutors.execute(client);
-    }
-    
-    // D88ClientConnectionDelegate DELEGATE
+        try {
+            String messageOnline = client.getClientName() + " is Online\n";
+            connections.stream().forEach((connection) -> {
+                connection.sendMessage(messageOnline.getBytes());
+            });
+            client.setDelegate(this);
+            this.connections.add(client);
+            this.exxecutors.execute(client);
 
+            D88Object d88Object = new D88Object("ping");
+            client.sendMessage(d88Object.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(D88Service.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    // D88ClientConnectionDelegate DELEGATE
     @Override
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient) {
         System.out.println(new String(message) + formClient.getClientName());
     }
 
-   
-
     @Override
     public void clientdidDisconnect(D88ClientConnection client) {
-        String messageOnline = client.getClientName() + " is offline\n";
         this.connections.remove(client);
         client.closeConection();
-        
-        connections.stream().forEach((connection) -> {
-            connection.sendMessage(messageOnline.getBytes());
-        });
     }
 
     @Override
     public void clientdidSendMessageFailer(D88ClientConnection client) {
-        
+
     }
-    
-    
-    
-    
-    
+
 }
