@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public final class D88SShare {
     private static final D88SShare INSTANCE = new D88SShare();
     private static final String ConfigFileName = "ServerConfig.properties";
-    
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("D88SS");
     private Properties sConfig = null;
     
     public static D88SShare getInstance() {
@@ -37,6 +37,12 @@ public final class D88SShare {
             }
         }
     }
+
+    public static org.apache.log4j.Logger getLogger() {
+        return logger;
+    }
+    
+    
     
     
     public String getConfig(String keyString){
@@ -66,5 +72,9 @@ public final class D88SShare {
         }
     }
     
+    
+    public void LoggerMessage(String message){
+        logger.info(message);
+    }
     
 }

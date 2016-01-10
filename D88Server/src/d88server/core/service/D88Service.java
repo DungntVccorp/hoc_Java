@@ -5,16 +5,15 @@
  */
 package d88server.core.service;
 
+import d88server.core.common.D88SShare;
 import d88server.core.object.D88Object;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
-
 /**
  *
  * @author dungnt
@@ -22,7 +21,7 @@ import java.util.zip.DataFormatException;
 public final class D88Service implements D88NetworkServiceDelegate, D88ClientConnectionDelegate {
 
     private static final D88Service INSTANCE = new D88Service();
-
+    
     private ExecutorService exxecutors;
     private ArrayList<D88ClientConnection> connections;
     private D88NetworkService networkService;
@@ -72,7 +71,7 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
     @Override
     public void didStartNetworkService() {
         this.isStart = true;
-        System.out.println("SERVICE DID STARTED!");
+        D88SShare.getInstance().LoggerMessage("SERVICE DID STARTED!");
     }
 
     @Override
