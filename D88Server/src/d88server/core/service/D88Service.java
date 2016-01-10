@@ -92,6 +92,9 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
             client.setDelegate(this);
             this.connections.add(client);
             this.exxecutors.execute(client);
+            
+            
+            
         } catch (Exception ex) {
             Logger.getLogger(D88Service.class.getName()).log(Level.SEVERE, null, ex);
         }
