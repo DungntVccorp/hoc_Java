@@ -92,9 +92,6 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
             client.setDelegate(this);
             this.connections.add(client);
             this.exxecutors.execute(client);
-            
-            
-            
         } catch (Exception ex) {
             Logger.getLogger(D88Service.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -106,15 +103,11 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient) {
         try {
             D88Object d88Object = new D88Object(message);
-            System.out.println(d88Object.getCmd());
-            System.out.println(d88Object.getObjVer());
-            System.out.println(d88Object.getObjAppID());
-            System.out.println(d88Object.getObjForm());
-            System.out.println(d88Object.getObjType());
-            System.out.println(Arrays.toString(d88Object.getBooleansForKey("o_b")));
-            d88Object.setCmd("pong");
-            formClient.sendMessage(d88Object.getMessage());
-            
+            if ("ping".equals(d88Object.getCmd())) {
+                d88Object.setCmd("pong");
+                formClient.sendMessage(d88Object.getMessage());
+            }
+
         } catch (DataFormatException ex) {
             System.out.println(ex.getMessage());
         } catch (Exception ex) {
