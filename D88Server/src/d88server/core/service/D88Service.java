@@ -103,6 +103,7 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient) {
         try {
             D88Object d88Object = new D88Object(message);
+            System.out.println("REV -> " + d88Object.getCmd());
             if ("ping".equals(d88Object.getCmd())) {
                 d88Object.setCmd("pong");
                 formClient.sendMessage(d88Object.getMessage());

@@ -120,7 +120,6 @@ public class D88Object {
         String objAppIDString = String.format("%12s", Integer.toBinaryString(this.objAppID)).replace(' ', '0');
         String objVerString = String.format("%8s", Integer.toBinaryString(this.objVer)).replace(' ', '0');
         String info = objVerString + objAppIDString + objFormString + objTypeString;
-        System.out.println(toBinary(new BigInteger(info, 2).toByteArray()));
         return new BigInteger(info, 2).toByteArray();
     }
     public void onRetoreInfo(byte[] info){
@@ -204,7 +203,6 @@ public class D88Object {
     public byte[] getMessage() throws Exception {
         // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
-        System.out.println(jsonOBJ.toString());
         // STEP 2 to JSON STRING AND GZIP
         byte[] zip = D88Ziper.d88Compress(jsonOBJ.toString());
         // STEP 3 APPEN INFO
@@ -229,7 +227,6 @@ public class D88Object {
             this.onRetoreInfo(dataInfo);
             byte[] rawData = Arrays.copyOfRange(d88Message, 0, d88Message.length - 3);
             String d88Decompress = D88Ziper.d88Decompress(rawData);
-            System.out.println(d88Decompress);
             JSONObject jsonModel = new JSONObject(d88Decompress);
             this.properties = this.toHashMap(jsonModel);
         }
