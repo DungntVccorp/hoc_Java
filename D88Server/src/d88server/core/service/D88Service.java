@@ -89,16 +89,9 @@ public final class D88Service implements D88NetworkServiceDelegate, D88ClientCon
     @Override
     public void ClientDidConnect(D88ClientConnection client) {
         try {
-            String messageOnline = client.getClientName() + " is Online\n";
-            connections.stream().forEach((connection) -> {
-                connection.sendMessage(messageOnline.getBytes());
-            });
             client.setDelegate(this);
             this.connections.add(client);
             this.exxecutors.execute(client);
-
-            D88Object d88Object = new D88Object("ping");
-            client.sendMessage(d88Object.getMessage());
         } catch (Exception ex) {
             Logger.getLogger(D88Service.class.getName()).log(Level.SEVERE, null, ex);
         }
