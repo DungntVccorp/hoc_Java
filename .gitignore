@@ -4,7 +4,6 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
@@ -76,3 +75,7 @@ vethrfolnir-mu/
 /D88Server/build/
 /DemoCallBack/nbproject/private/
 /DemoCallBack/build/
+/D88SCore/nbproject/private/
+/D88SCore/dist/
+/D88SCore/build/
+/GMA/nbproject/private/
