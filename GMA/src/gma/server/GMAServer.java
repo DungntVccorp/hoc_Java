@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gma.network;
+package gma.server;
 
 import d88.core.network.D88ClientConnection;
 import d88.core.network.D88ServerNetwork;
 import d88.core.object.D88SObject;
 import gma.common.GMAConstants;
+import gma.common.GMAShare;
+import gma.object.GMAClient;
 import gma.object.GMAObject;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -24,7 +26,7 @@ import java.util.zip.DataFormatException;
 public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
     private boolean enbablerReconect = false;
-   
+    
     
     public GMAServer() {
         
@@ -57,14 +59,15 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
     public void ServerConnectionClientDidConnect(D88ClientConnection client) {
         try {
             // nếu client chưa được thiết lập session hỏi client xem là thiết lập mới hay không
-                if(client.getTokenSession().isEmpty()){
-                    // hỏi client xem có phải kết nối mới hay là reconect
-                    GMAObject gmaReconect = new GMAObject("gr");
-                    client.sendMessage(gmaReconect.getMessage());
-                }
-                else{
-                    
-                }
+            GMAShare.getInstance().onAddClient(new GMAClient(client));
+//                if(client.getTokenSession().isEmpty()){
+//                    // hỏi client xem có phải kết nối mới hay là reconect
+//                    GMAObject gmaReconect = new GMAObject("gr");
+//                    client.sendMessage(gmaReconect.getMessage());
+//                }
+//                else{
+//                    
+//                }
         } catch (Exception ex) {
             Logger.getLogger(GMAServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -94,13 +97,16 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
     @Override
     public void clientConnectionLost(D88ClientConnection client) {
         // save temp info client
-        System.out.println("clientConnectionLost");
+        GMAClient onRemoveClient = GMAShare.getInstance().onRemoveClient(client.getClientName());
+        GMAShare.getInstance().onAddClientLost(onRemoveClient);
+        
     }
 
     @Override
     public void clientConnectionTimeout(D88ClientConnection client) {
         // save temp info client
-        System.out.println("clientConnectionTimeout");
+        GMAClient onRemoveClient = GMAShare.getInstance().onRemoveClient(client.getClientName());
+        GMAShare.getInstance().onAddClientTimeOut(onRemoveClient);
     }
 
     @Override

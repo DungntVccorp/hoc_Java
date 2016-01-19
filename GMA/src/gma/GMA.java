@@ -5,7 +5,7 @@
  */
 package gma;
 
-import gma.network.GMAServer;
+import gma.server.GMAServer;
 import gma.object.GMAObject;
 
 /**
