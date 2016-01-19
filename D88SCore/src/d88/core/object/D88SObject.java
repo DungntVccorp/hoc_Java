@@ -5,6 +5,7 @@
  */
 package d88.core.object;
 
+import d88.core.common.D88Constants;
 import d88.core.common.D88SCommon;
 import d88.core.common.D88SGzip;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.util.HashMap;
 import java.util.zip.DataFormatException;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import d88.core.common.D88Constants.OBJTYPE;
+import d88.core.common.D88Constants.OBJFORM;
 
 /**
  *
@@ -76,36 +79,7 @@ import org.json.JSONObject;
 
 public class D88SObject {
     
-    public static enum OBJTYPE{
-        
-        USER(0), REQUEST(1), CHAT(2), OTHER(3);
-        
-        private final int value;
- 
-        OBJTYPE(int value) {
-            this.value = value;
-        }
- 
-        public int getValue() {
-            return this.value;
-        }
-      
-    };
-    public static enum OBJFORM{
-        
-        SERVER(0), IOS(1), JAVA(2), OTHER(3);
-        
-        private final int value;
- 
-        OBJFORM(int value) {
-            this.value = value;
-        }
- 
-        public int getValue() {
-            return this.value;
-        }
-      
-    };
+    
     
     private String cmd = null;
     private OBJTYPE objType = OBJTYPE.USER;
@@ -114,21 +88,14 @@ public class D88SObject {
     private int objVer = 1;
 
     private HashMap<String, Object> properties = null;
-    private static final String prefix_String = "s_"; // String
-    private static final String prefix_Integer = "i_"; // Intergerg
-    private static final String prefix_Double = "d_"; // Double
-    private static final String prefix_Boolean = "o_";  // Boolean
     
-    
-    
-    public static final String CMD_STRING                           = "cmd";
     // CONSTRUCTOR
     
     public D88SObject(String _cmd) { // init default with CMD
         this.cmd = _cmd;
         if (this.properties == null) {
             this.properties = new HashMap<>();
-            this.properties.put(CMD_STRING, _cmd);
+            this.properties.put(D88Constants.CMD_STRING, _cmd);
         }
     }
 
@@ -140,7 +107,7 @@ public class D88SObject {
         
         if (this.properties == null) {
             this.properties = new HashMap<>();
-            this.properties.put(CMD_STRING, _cmd);
+            this.properties.put(D88Constants.CMD_STRING, _cmd);
         }
     }
     
@@ -196,7 +163,7 @@ public class D88SObject {
         HashMap<String, Object> maptemp = new HashMap<>();
 
         for (String key : json.keySet()) {
-            if (key.startsWith(prefix_String)) {
+            if (key.startsWith(D88Constants.prefix_String)) {
                 if (json.get(key) instanceof JSONArray) {
                     JSONArray jsonArray = json.getJSONArray(key);
                     String[] list = new String[jsonArray.length()];
@@ -207,7 +174,7 @@ public class D88SObject {
                 } else {
                     maptemp.put(key, json.getString(key));
                 }
-            } else if (key.startsWith(prefix_Integer)) {
+            } else if (key.startsWith(D88Constants.prefix_Integer)) {
                 if (json.get(key) instanceof JSONArray) {
                     JSONArray jsonArray = json.getJSONArray(key);
                     int[] list = new int[jsonArray.length()];
@@ -219,7 +186,7 @@ public class D88SObject {
                 } else {
                     maptemp.put(key, json.getInt(key));
                 }
-            } else if (key.startsWith(prefix_Double)) {
+            } else if (key.startsWith(D88Constants.prefix_Double)) {
                 if (json.get(key) instanceof JSONArray) {
                     JSONArray jsonArray = json.getJSONArray(key);
                     double[] list = new double[jsonArray.length()];
@@ -230,7 +197,7 @@ public class D88SObject {
                 } else {
                     maptemp.put(key, json.getDouble(key));
                 }
-            } else if (key.startsWith(prefix_Boolean)) {
+            } else if (key.startsWith(D88Constants.prefix_Boolean)) {
                 if (json.get(key) instanceof JSONArray) {
                     JSONArray jsonArray = json.getJSONArray(key);
                     boolean[] list = new boolean[jsonArray.length()];
@@ -241,7 +208,7 @@ public class D88SObject {
                 } else {
                     maptemp.put(key, json.getBoolean(key));
                 }
-            } else if (CMD_STRING.equals(key)) {
+            } else if (D88Constants.CMD_STRING.equals(key)) {
                 maptemp.put(key, json.getString(key));
                 this.cmd = json.getString(key);
             } 
@@ -269,14 +236,14 @@ public class D88SObject {
     
     // OBJECT ACTION
     public boolean containsKey(String key) {
-        if (this.properties.containsKey(prefix_String + key)) {
+        if (this.properties.containsKey(D88Constants.prefix_String + key)) {
             return true;
-        } else if (this.properties.containsKey(prefix_Integer + key)) {
+        } else if (this.properties.containsKey(D88Constants.prefix_Integer + key)) {
             return true;
-        } else if (this.properties.containsKey(prefix_Double + key)) {
+        } else if (this.properties.containsKey(D88Constants.prefix_Double + key)) {
             return true;
         } else {
-            return this.properties.containsKey(prefix_Boolean + key);
+            return this.properties.containsKey(D88Constants.prefix_Boolean + key);
         }
     }
 
@@ -284,28 +251,28 @@ public class D88SObject {
         String[] keys = new String[this.properties.keySet().size()];
         int t = 0;
         for (String key : this.properties.keySet()) {
-            keys[t] = key.replace(prefix_String, "").replace(prefix_Integer, "").replace(prefix_Double, "").replace(prefix_Boolean, "");
+            keys[t] = key.replace(D88Constants.prefix_String, "").replace(D88Constants.prefix_Integer, "").replace(D88Constants.prefix_Double, "").replace(D88Constants.prefix_Boolean, "");
             t += 1;
         }
         return keys;
     }
     
     public boolean removeObjectForKey(String key){
-        if(CMD_STRING.equals(key)){
+        if(D88Constants.CMD_STRING.equals(key)){
             return false;
         }
         if(this.containsKey(key)){
-            if (this.properties.containsKey(prefix_String + key)) {
-                this.properties.remove(prefix_String + key);
+            if (this.properties.containsKey(D88Constants.prefix_String + key)) {
+                this.properties.remove(D88Constants.prefix_String + key);
             }
-            else if (this.properties.containsKey(prefix_Integer + key)) {
-                this.properties.remove(prefix_Integer + key);
+            else if (this.properties.containsKey(D88Constants.prefix_Integer + key)) {
+                this.properties.remove(D88Constants.prefix_Integer + key);
             }
-            else if (this.properties.containsKey(prefix_Double + key)) {
-                this.properties.remove(prefix_Double + key);
+            else if (this.properties.containsKey(D88Constants.prefix_Double + key)) {
+                this.properties.remove(D88Constants.prefix_Double + key);
             }
             else{
-                this.properties.remove(prefix_Boolean + key);
+                this.properties.remove(D88Constants.prefix_Boolean + key);
             }
             return true;
         }
@@ -319,74 +286,74 @@ public class D88SObject {
 
     public void setCmd(String cmd) {
         this.cmd = cmd;
-        this.properties.put(CMD_STRING, cmd);
+        this.properties.put(D88Constants.CMD_STRING, cmd);
     }
     public void setStringForKey(String value, String key) {
-        this.properties.put(prefix_String + key, value);
+        this.properties.put(D88Constants.prefix_String + key, value);
     }
 
     public String getStringForKey(String key) {
-        return (String) this.properties.get(prefix_String + key);
+        return (String) this.properties.get(D88Constants.prefix_String + key);
     }
 
     public void setStringsForKey(String[] value, String key) {
-        this.properties.put(prefix_String + key, value);
+        this.properties.put(D88Constants.prefix_String + key, value);
     }
 
     public String[] getStringsForKey(String key) {
-        return (String[]) this.properties.get(prefix_String + key);
+        return (String[]) this.properties.get(D88Constants.prefix_String + key);
     }
 
     //Integer
     public void setIntegerForKey(int value, String key) {
-        this.properties.put(prefix_Integer + key, value);
+        this.properties.put(D88Constants.prefix_Integer + key, value);
     }
 
     public int getIntegerForKey(String key) {
-        return (int) this.properties.get(prefix_Integer + key);
+        return (int) this.properties.get(D88Constants.prefix_Integer + key);
     }
 
     public void setIntegersForKey(int[] value, String key) {
-        this.properties.put(prefix_Integer + key, value);
+        this.properties.put(D88Constants.prefix_Integer + key, value);
     }
 
     public int[] getIntegersForKey(String key) {
-        return (int[]) this.properties.get(prefix_Integer + key);
+        return (int[]) this.properties.get(D88Constants.prefix_Integer + key);
     }
 
     //Double
     public void setDoubleForKey(double value, String key) {
-        this.properties.put(prefix_Double + key, value);
+        this.properties.put(D88Constants.prefix_Double + key, value);
 
     }
 
     public double getDoubleForKey(String key) {
-        return (double) this.properties.get(prefix_Double + key);
+        return (double) this.properties.get(D88Constants.prefix_Double + key);
     }
 
     public void setDoublesForKey(double[] value, String key) {
-        this.properties.put(prefix_Double + key, value);
+        this.properties.put(D88Constants.prefix_Double + key, value);
     }
 
     public double[] getDoublesForKey(String key) {
-        return (double[]) this.properties.get(prefix_Double + key);
+        return (double[]) this.properties.get(D88Constants.prefix_Double + key);
     }
 
     //bool
     public void setBooleanForKey(boolean value, String key) {
-        this.properties.put(prefix_Boolean + key, value);
+        this.properties.put(D88Constants.prefix_Boolean + key, value);
     }
 
     public boolean getBooleanForKey(String key) {
-        return (boolean) this.properties.get(prefix_Boolean + key);
+        return (boolean) this.properties.get(D88Constants.prefix_Boolean + key);
     }
 
     public void setBooleansForKey(boolean[] value, String key) {
-        this.properties.put(prefix_Boolean + key, value);
+        this.properties.put(D88Constants.prefix_Boolean + key, value);
     }
 
     public boolean[] getBooleansForKey(String key) {
-        return (boolean[]) this.properties.get(prefix_Boolean + key);
+        return (boolean[]) this.properties.get(D88Constants.prefix_Boolean + key);
     }
     
     // obj param
