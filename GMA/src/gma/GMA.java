@@ -6,6 +6,7 @@
 package gma;
 
 import gma.network.GMAServer;
+import gma.object.GMAObject;
 
 /**
  *
@@ -19,6 +20,7 @@ public class GMA {
     public static void main(String[] args) {
         // TODO code application logic here
         GMAServer gmaServer = new GMAServer();
+        
     }
     
 }

@@ -8,6 +8,7 @@ package gma.network;
 import d88.core.network.D88ClientConnection;
 import d88.core.network.D88ServerNetwork;
 import d88.core.object.D88SObject;
+import gma.object.GMAObject;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,6 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
     public GMAServer() {
         
         D88ServerNetwork d88ServerNetwork = new D88ServerNetwork(1234, Executors.newCachedThreadPool(), this);
-        
     }
 
     @Override
@@ -48,6 +48,19 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
     @Override
     public void ServerConnectionClientDidConnect(D88ClientConnection client) {
+        try {
+            // nếu client chưa được thiết lập session hỏi client xem là thiết lập mới hay không
+                if(client.getTokenSession().isEmpty()){
+                    // hỏi client xem có phải kết nối mới hay là reconect
+                    GMAObject gmaReconect = new GMAObject("gr");
+                    client.sendMessage(gmaReconect.getMessage());
+                }
+                else{
+                    
+                }
+        } catch (Exception ex) {
+            Logger.getLogger(GMAServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -58,11 +71,16 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient) {
         try {
             D88SObject d88SObject = new D88SObject(message);
-            System.out.println(d88SObject.getCmd());
+            if(d88SObject != null){
+                if("gr".equals(d88SObject.getCmd())){
+                    System.out.println(formClient.getClientName());
+                    System.out.println("reconect " + d88SObject.getBooleanForKey("re"));
+                }
+            }
         } catch (DataFormatException ex) {
-            Logger.getLogger(GMAServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         } catch (Exception ex) {
-            Logger.getLogger(GMAServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getLocalizedMessage());
         }
     }
 
