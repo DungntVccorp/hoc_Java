@@ -21,16 +21,16 @@ import java.util.logging.Logger;
 interface D88ClientConnectionDelegate {
 
     public void clientdidReceiveMessage(byte[] message, D88ClientConnection formClient);
-    
+
     public void clientConnectionLost(D88ClientConnection client);
-    
+
     public void clientConnectionTimeout(D88ClientConnection client);
 
     public void clientdidDisconnect(D88ClientConnection client);
-    
-    public void clientDidSendMessage(byte [] message,D88ClientConnection client);
 
-    public void clientdidSendMessageFailer(D88ClientConnection client,String message);
+    public void clientDidSendMessage(byte[] message, D88ClientConnection client);
+
+    public void clientdidSendMessageFailer(D88ClientConnection client, String message);
 }
 
 public class D88ClientConnection implements Runnable {
@@ -47,7 +47,19 @@ public class D88ClientConnection implements Runnable {
         this.ClientName = UUID.randomUUID().toString();
         try {
             this.cSocket = _acceptSocket;
-            this.cSocket.setSoTimeout(20000);
+            this.din = new DataInputStream(this.cSocket.getInputStream());
+            this.dout = new DataOutputStream(this.cSocket.getOutputStream());
+            this.isConnection = true;
+        } catch (IOException ex) {
+            Logger.getLogger(D88ClientConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public D88ClientConnection(Socket _acceptSocket,int timeout) {
+        this.ClientName = UUID.randomUUID().toString();
+        try {
+            this.cSocket = _acceptSocket;
+            this.cSocket.setSoTimeout(timeout);
             this.din = new DataInputStream(this.cSocket.getInputStream());
             this.dout = new DataOutputStream(this.cSocket.getOutputStream());
             this.isConnection = true;
@@ -63,8 +75,7 @@ public class D88ClientConnection implements Runnable {
                 this.isConnection = false;
             } else if (this.cSocket.isClosed() || this.cSocket.isOutputShutdown()) {
                 this.isConnection = false;
-            } 
-            else {
+            } else {
                 try {
 
                     // read data form client
@@ -76,21 +87,20 @@ public class D88ClientConnection implements Runnable {
                         if (this.delegate != null) {
                             this.delegate.clientdidReceiveMessage(readBytes.toByteArray(), this);
                         }
-                    }
-                    else{
+                    } else {
                         this.isConnection = false;
-                        if(this.delegate != null){
+                        if (this.delegate != null) {
                             this.delegate.clientConnectionLost(this);
                         }
                     }
                 } catch (IOException ex) {
                     this.isConnection = false;
                     if ("Read timed out".equals(ex.getMessage())) {
-                        if(this.delegate != null){
+                        if (this.delegate != null) {
                             this.delegate.clientConnectionTimeout(this);
                         }
                     }
-                } 
+                }
             }
         }
 
@@ -103,7 +113,7 @@ public class D88ClientConnection implements Runnable {
                     this.delegate.clientdidDisconnect(this);
                 }
             } catch (IOException ex) {
-                
+
             }
         }
     }
@@ -128,14 +138,11 @@ public class D88ClientConnection implements Runnable {
         this.tokenSession = tokenSession;
     }
 
-    
-    
     // CLIENT ACTION
-    
     public void sendMessage(byte[] message) {
         try {
             this.dout.write(message);
-            if(this.delegate != null){
+            if (this.delegate != null) {
                 this.delegate.clientDidSendMessage(message, this);
             }
         } catch (IOException ex) {

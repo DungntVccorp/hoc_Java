@@ -59,6 +59,18 @@ public class D88ServerNetwork implements D88ServerConnectionDelegate, D88ClientC
             }
         }
     }
+    public D88ServerNetwork(int SERVER_PORT,int  timeOutConection , ExecutorService exxecutors, D88NetworkDelegate delegate) {
+        this.exxecutors = exxecutors;
+        this.delegate = delegate;
+        this.ServerConnection = new D88ServerConnection(this, SERVER_PORT,timeOutConection);
+        if (this.exxecutors != null) {
+            this.exxecutors.execute(this.ServerConnection);
+        } else {
+            if (this.delegate != null) {
+                this.delegate.onD88NetworkError("ExecutorService not null");
+            }
+        }
+    }
 
     // D88ServerConnectionDelegate
     @Override
