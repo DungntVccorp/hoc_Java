@@ -15,6 +15,7 @@ public final class GMAConstants {
 //+------------------+    
 
     public static final int SERVER_LISTEN_PORT                                  = 1234;
+    public static final int SERVER_TIME_OUT_CONNECTION                          = 10000; // OFF SET = 0
 //+------------------+
 //|       CMD        |                                                                  
 //+------------------+    

@@ -24,11 +24,11 @@ import java.util.zip.DataFormatException;
 public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
     private boolean enbablerReconect = false;
-    
+   
     
     public GMAServer() {
         
-        D88ServerNetwork d88ServerNetwork = new D88ServerNetwork(GMAConstants.SERVER_LISTEN_PORT, Executors.newCachedThreadPool(), this);
+        D88ServerNetwork d88ServerNetwork = new D88ServerNetwork(GMAConstants.SERVER_LISTEN_PORT, GMAConstants.SERVER_TIME_OUT_CONNECTION, Executors.newCachedThreadPool(), this);
     }
 
     @Override
@@ -46,6 +46,7 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
     @Override
     public void ServerConnectionDidEnd() {
+        
     }
 
     @Override
@@ -92,10 +93,14 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
     @Override
     public void clientConnectionLost(D88ClientConnection client) {
+        // save temp info client
+        System.out.println("clientConnectionLost");
     }
 
     @Override
     public void clientConnectionTimeout(D88ClientConnection client) {
+        // save temp info client
+        System.out.println("clientConnectionTimeout");
     }
 
     @Override
