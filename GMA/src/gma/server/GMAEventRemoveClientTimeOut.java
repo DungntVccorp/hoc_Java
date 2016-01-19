@@ -7,6 +7,7 @@ package gma.server;
 
 import gma.common.GMAShare;
 import gma.object.GMAClient;
+import java.util.Date;
 import java.util.Set;
 import java.util.TimerTask;
 
@@ -22,7 +23,7 @@ public class GMAEventRemoveClientTimeOut extends TimerTask{
         for (String key : keySet) {
             System.out.println(key);
             GMAClient clientTimeOut = GMAShare.getInstance().getClientTimeOut(key);
-            System.out.println(clientTimeOut.getTimeToTimeOut());
+            System.out.println(new Date().getTime() - clientTimeOut.getTimeToTimeOut());
         }
     }
     
