@@ -8,6 +8,7 @@ package gma.network;
 import d88.core.network.D88ClientConnection;
 import d88.core.network.D88ServerNetwork;
 import d88.core.object.D88SObject;
+import gma.common.GMAConstants;
 import gma.object.GMAObject;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -18,11 +19,16 @@ import java.util.zip.DataFormatException;
  *
  * @author dungnt
  */
+
+
 public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
 
+    private boolean enbablerReconect = false;
+    
+    
     public GMAServer() {
         
-        D88ServerNetwork d88ServerNetwork = new D88ServerNetwork(1234, Executors.newCachedThreadPool(), this);
+        D88ServerNetwork d88ServerNetwork = new D88ServerNetwork(GMAConstants.SERVER_LISTEN_PORT, Executors.newCachedThreadPool(), this);
     }
 
     @Override
@@ -103,6 +109,20 @@ public class GMAServer implements D88ServerNetwork.D88NetworkDelegate{
     @Override
     public void clientdidSendMessageFailer(D88ClientConnection client, String message) {
     }
+    
+    
+    
+    // SET GET
+
+    public boolean isEnbablerReconect() {
+        return enbablerReconect;
+    }
+
+    public void setEnbablerReconect(boolean enbablerReconect) {
+        this.enbablerReconect = enbablerReconect;
+    }
+    
+    
     
     
 }

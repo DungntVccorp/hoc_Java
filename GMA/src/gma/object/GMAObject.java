@@ -6,6 +6,8 @@
 package gma.object;
 
 import d88.core.object.D88SObject;
+import d88.core.common.D88Constants.OBJFORM;
+import d88.core.common.D88Constants.OBJTYPE;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
@@ -20,14 +22,14 @@ public class GMAObject extends D88SObject{
     public GMAObject(String _cmd) {
         super(_cmd);
         this.setObjType(OBJTYPE.USER);
-        this.setObjForm(OBJFORM.SERVER);
+        this.setObjForm(OBJFORM.SERVER); // DEFAULT
         this.setObjVer(GMA_CURRENT_OBJECT_VERSION);
     }
 
     public GMAObject(OBJTYPE objtype,String _cmd) {
         super(_cmd);
         this.setObjType(objtype);
-        this.setObjForm(OBJFORM.SERVER);
+        this.setObjForm(OBJFORM.SERVER); // DEFAULT
     }
     
     
