@@ -41,6 +41,7 @@ public class D88ClientConnection implements Runnable {
     private DataOutputStream dout = null;
     private String ClientName = null;
     private D88ClientConnectionDelegate delegate;
+    private String tokenSession = "";
 
     public D88ClientConnection(Socket _acceptSocket) {
         this.ClientName = UUID.randomUUID().toString();
@@ -119,6 +120,18 @@ public class D88ClientConnection implements Runnable {
         this.delegate = delegate;
     }
 
+    public String getTokenSession() {
+        return tokenSession;
+    }
+
+    public void setTokenSession(String tokenSession) {
+        this.tokenSession = tokenSession;
+    }
+
+    
+    
+    // CLIENT ACTION
+    
     public void sendMessage(byte[] message) {
         try {
             this.dout.write(message);

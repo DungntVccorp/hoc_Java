@@ -76,49 +76,119 @@ import org.json.JSONObject;
 
 public class D88SObject {
     
+    public static enum OBJTYPE{
+        
+        USER(0), REQUEST(1), CHAT(2), OTHER(3);
+        
+        private final int value;
+ 
+        OBJTYPE(int value) {
+            this.value = value;
+        }
+ 
+        public int getValue() {
+            return this.value;
+        }
+      
+    };
+    public static enum OBJFORM{
+        
+        SERVER(0), IOS(1), JAVA(2), OTHER(3);
+        
+        private final int value;
+ 
+        OBJFORM(int value) {
+            this.value = value;
+        }
+ 
+        public int getValue() {
+            return this.value;
+        }
+      
+    };
+    
     private String cmd = null;
-    private String appID = null;
-    private int objType = 3;
-    private int objForm = 0; // SERVER CREATE
+    private OBJTYPE objType = OBJTYPE.USER;
+    private OBJFORM objForm = OBJFORM.SERVER; // SERVER CREATE
     private int objAppID = 0;
     private int objVer = 1;
 
     private HashMap<String, Object> properties = null;
     private static final String prefix_String = "s_"; // String
-    private static final String prefix_Integer = "i_"; // Interger
+    private static final String prefix_Integer = "i_"; // Intergerg
     private static final String prefix_Double = "d_"; // Double
     private static final String prefix_Boolean = "o_";  // Boolean
+    
+    
+    
+    public static final String CMD_STRING                           = "cmd";
     // CONSTRUCTOR
     
-    public D88SObject() {
-        if (this.properties == null) {
-            this.properties = new HashMap<>();
-        }
-    }
-    
-    public D88SObject(String _cmd) {
+    public D88SObject(String _cmd) { // init default with CMD
         this.cmd = _cmd;
         if (this.properties == null) {
             this.properties = new HashMap<>();
-            this.properties.put("cmd", _cmd);
+            this.properties.put(CMD_STRING, _cmd);
         }
     }
 
-    public D88SObject(String _cmd, String _appid) {
+    public D88SObject(OBJTYPE _objType,int _objAppID,int _objVer,String _cmd) {
         this.cmd = _cmd;
-        this.appID = _appid;
+        this.objType = _objType;        
+        this.objAppID = _objAppID;
+        this.objVer = _objVer;
+        
         if (this.properties == null) {
             this.properties = new HashMap<>();
-            this.properties.put("cmd", _cmd);
-            this.properties.put("appID", _appid);
+            this.properties.put(CMD_STRING, _cmd);
+        }
+    }
+    
+    public D88SObject(byte[] d88Message) throws IOException, DataFormatException, Exception {
+        if (this.properties == null) {
+            this.properties = new HashMap<>();
+        }
+        // kiểm tra xem message có hơp lệ không > 3  byte
+        if (d88Message.length >= 3) {
+            // lấy ra 3 byte cuối để xác định info 
+            // những file còn lại là file rawdata cần unzip
+            byte[] dataInfo = Arrays.copyOfRange(d88Message, d88Message.length - 3, d88Message.length);
+            this.onRetoreInfo(dataInfo);
+            byte[] rawData = Arrays.copyOfRange(d88Message, 0, d88Message.length - 3);
+            String d88Decompress = D88SGzip.d88Decompress(rawData);
+            JSONObject jsonModel = new JSONObject(d88Decompress);
+            this.properties = this.toHashMap(jsonModel);
         }
     }
     
     
     private void onRetoreInfo(byte[] info){
         String toBinary = D88SCommon.toBinary(info);
-        this.objType = Integer.parseInt(toBinary.substring(toBinary.length() - 2, toBinary.length()), 2);
-        this.objForm = Integer.parseInt(toBinary.substring(toBinary.length() - 4, toBinary.length() - 2), 2);
+        int inttype = Integer.parseInt(toBinary.substring(toBinary.length() - 2, toBinary.length()), 2);
+        if(inttype == 0){
+            this.objType = OBJTYPE.USER;
+        }else if(inttype == 1){
+            this.objType = OBJTYPE.REQUEST;
+        }
+        else if(inttype == 2){
+            this.objType = OBJTYPE.CHAT;
+        }
+        else if(inttype == 3){
+            this.objType = OBJTYPE.OTHER;
+        }
+        
+        int objFormINT = Integer.parseInt(toBinary.substring(toBinary.length() - 4, toBinary.length() - 2), 2);
+        if(objFormINT == 0){
+            this.objForm = OBJFORM.SERVER;
+        }else if(objFormINT == 1){
+            this.objForm = OBJFORM.IOS;
+        }
+        else if(objFormINT == 2){
+            this.objForm = OBJFORM.JAVA;
+        }
+        else if(objFormINT == 3){
+            this.objForm = OBJFORM.OTHER;
+        }
         this.objAppID = Integer.parseInt(toBinary.substring(toBinary.length() - 16, toBinary.length() - 4), 2);
         this.objVer = Integer.parseInt(toBinary.substring(toBinary.length() - 24, toBinary.length() - 16), 2);
     }
@@ -171,37 +241,19 @@ public class D88SObject {
                 } else {
                     maptemp.put(key, json.getBoolean(key));
                 }
-            } else if ("cmd".equals(key)) {
+            } else if (CMD_STRING.equals(key)) {
                 maptemp.put(key, json.getString(key));
                 this.cmd = json.getString(key);
-            } else if ("appID".equals(key)) {
-                maptemp.put(key, json.getString(key));
-                this.appID = json.getString(key);
-            }
+            } 
 
         }
         return maptemp;
     }
-    public D88SObject(byte[] d88Message) throws IOException, DataFormatException, Exception {
-        if (this.properties == null) {
-            this.properties = new HashMap<>();
-        }
-        // kiểm tra xem message có hơp lệ không > 3  byte
-        if (d88Message.length >= 3) {
-            // lấy ra 3 byte cuối để xác định info 
-            // những file còn lại là file rawdata cần unzip
-            byte[] dataInfo = Arrays.copyOfRange(d88Message, d88Message.length - 3, d88Message.length);
-            this.onRetoreInfo(dataInfo);
-            byte[] rawData = Arrays.copyOfRange(d88Message, 0, d88Message.length - 3);
-            String d88Decompress = D88SGzip.d88Decompress(rawData);
-            JSONObject jsonModel = new JSONObject(d88Decompress);
-            this.properties = this.toHashMap(jsonModel);
-        }
-    }
+    
     
     private byte[] onCreateObjectInfo() {
-        String objTypeString = String.format("%2s", Integer.toBinaryString(this.objType)).replace(' ', '0');
-        String objFormString = String.format("%2s", Integer.toBinaryString(this.objForm)).replace(' ', '0');
+        String objTypeString = String.format("%2s", Integer.toBinaryString(this.objType.getValue())).replace(' ', '0');
+        String objFormString = String.format("%2s", Integer.toBinaryString(this.objForm.getValue())).replace(' ', '0');
         String objAppIDString = String.format("%12s", Integer.toBinaryString(this.objAppID)).replace(' ', '0');
         String objVerString = String.format("%8s", Integer.toBinaryString(this.objVer)).replace(' ', '0');
         String info = objVerString + objAppIDString + objFormString + objTypeString;
@@ -209,14 +261,13 @@ public class D88SObject {
     }
     
     public byte[] getMessage() throws Exception {
-        // STEP 1 to JSON OBJ
         JSONObject jsonOBJ = new JSONObject(this.properties);
-        // STEP 2 to JSON STRING AND GZIP
         byte[] zip = D88SGzip.d88Compress(jsonOBJ.toString());
-        // STEP 3 APPEN INFO
         return D88SCommon.concatenateByteArrays(zip, onCreateObjectInfo());
     }
     
+    
+    // OBJECT ACTION
     public boolean containsKey(String key) {
         if (this.properties.containsKey(prefix_String + key)) {
             return true;
@@ -238,6 +289,28 @@ public class D88SObject {
         }
         return keys;
     }
+    
+    public boolean removeObjectForKey(String key){
+        if(CMD_STRING.equals(key)){
+            return false;
+        }
+        if(this.containsKey(key)){
+            if (this.properties.containsKey(prefix_String + key)) {
+                this.properties.remove(prefix_String + key);
+            }
+            else if (this.properties.containsKey(prefix_Integer + key)) {
+                this.properties.remove(prefix_Integer + key);
+            }
+            else if (this.properties.containsKey(prefix_Double + key)) {
+                this.properties.remove(prefix_Double + key);
+            }
+            else{
+                this.properties.remove(prefix_Boolean + key);
+            }
+            return true;
+        }
+        return false;
+    }
 
     // SET GET
     public String getCmd() {
@@ -246,18 +319,8 @@ public class D88SObject {
 
     public void setCmd(String cmd) {
         this.cmd = cmd;
-        this.properties.put("cmd", cmd);
+        this.properties.put(CMD_STRING, cmd);
     }
-
-    public String getAppID() {
-        return (String) this.properties.get("appID");
-    }
-
-    public void setAppID(String appID) {
-        this.appID = appID;
-        this.properties.put("appID", appID);
-    }
-
     public void setStringForKey(String value, String key) {
         this.properties.put(prefix_String + key, value);
     }
@@ -325,12 +388,14 @@ public class D88SObject {
     public boolean[] getBooleansForKey(String key) {
         return (boolean[]) this.properties.get(prefix_Boolean + key);
     }
+    
+    // obj param
 
-    public int getObjType() {
+    public OBJTYPE getObjType() {
         return objType;
     }
 
-    public int getObjForm() {
+    public OBJFORM getObjForm() {
         return objForm;
     }
 
@@ -341,4 +406,21 @@ public class D88SObject {
     public int getObjVer() {
         return objVer;
     }
+
+    public void setObjType(OBJTYPE objType) {
+        this.objType = objType;
+    }
+
+    public void setObjForm(OBJFORM objForm) {
+        this.objForm = objForm;
+    }
+
+    public void setObjAppID(int objAppID) {
+        this.objAppID = objAppID;
+    }
+
+    public void setObjVer(int objVer) {
+        this.objVer = objVer;
+    }
+    
 }
